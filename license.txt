@@ -110,7 +110,7 @@ Government Agency Point of Contact for Original Software: heath.reising@nasa.gov
     B. Each Recipient must ensure that the following copyright notice appears
        prominently in the Subject Software:
 
-       Copyright 2019 United States Government as represented by the
+       Copyright 2020 United States Government as represented by the
        Administrator of the National Aeronautics and Space Administration.
        No copyright is claimed in the United States under Title 17, U.S. Code.
        All Other Rights Reserved.
@@ -143,11 +143,11 @@ Government Agency Point of Contact for Original Software: heath.reising@nasa.gov
     F. In an effort to track usage and maintain accurate records of the Subject
        Software, each Recipient, upon receipt of the Subject Software, is
        requested to register with Government Agency by visiting the following
-       website: https://github.com/nasa/TrickHLA.  Recipient's name and personal
-       information shall be used for statistical purposes only. Once a
-       Recipient makes a Modification available, it is requested that the
-       Recipient inform Government Agency at the web site provided above how to
-       access the Modification.
+       website: https://github.com/nasa/Three-Dimensional-Nozzle-Design-Code.  
+       Recipient's name and personal information shall be used for statistical 
+       purposes only. Once a Recipient makes a Modification available, it is 
+       requested that the Recipient inform Government Agency at the web site 
+       provided above how to access the Modification.
 
     G. Each Contributor represents that its Modification is believed to be
        Contributor's original creation and does not violate any existing
