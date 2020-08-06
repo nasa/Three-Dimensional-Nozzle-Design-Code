@@ -15,4 +15,6 @@ This package contains 3 programs written for the Microsoft Visual C++ compiler:
 
 Each program is contained in a separate folder containing source code and sample outputs. These programs are designed to use the Microsoft Foundation Class (MFC) libraries to generate the GUI windows for user input.
 
-Detailed descriptions of the mathematical basis and operation of each program are provided in the attached report: <center><b> Rice, T., "2D and 3D Method of Characteristic Tools for Complex Nozzle Development," JHU/APL Report RTDC-TPS-481. 2003. </b></center>
+Detailed descriptions of the mathematical basis and operation of each program are provided in the attached report: 
+
+**[Rice, T., "2D and 3D Method of Characteristic Tools for Complex Nozzle Development," JHU/APL Report RTDC-TPS-481. 2003.](https://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/20030067852.pdf)**
