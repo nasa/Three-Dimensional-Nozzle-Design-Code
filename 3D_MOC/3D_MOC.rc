@@ -1,0 +1,276 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#endif //_WIN32\r\n"
+    "#include ""res\\3D_MOC.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+// Tharen Rice May 2020. Commented out the next line
+//IDR_MAINFRAME           ICON    DISCARDABLE     "res\\3D_MOC.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 235, 55
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About 3D_MOC"
+FONT 8, "MS Sans Serif"
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,11,17,20,20
+    LTEXT           "3D_MOC Version 1.0",IDC_STATIC,40,10,119,8,SS_NOPREFIX
+    LTEXT           "Copyright (C) 2002",IDC_STATIC,40,25,119,8
+    DEFPUSHBUTTON   "OK",IDOK,178,7,50,14,WS_GROUP
+END
+
+IDD_3D_MOC_DIALOG DIALOGEX 0, 0, 298, 285
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "3D Method of Characteristics Tool"
+FONT 8, "MS Sans Serif"
+BEGIN
+    EDITTEXT        IDC_geomFile_EDIT,82,22,68,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_summaryFile_EDIT,82,38,68,12,ES_AUTOHSCROLL | 
+                    WS_DISABLED
+    EDITTEXT        IDC_nDiv_EDIT,84,84,40,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_nX_EDIT,84,98,40,12,ES_AUTOHSCROLL | WS_DISABLED
+    EDITTEXT        IDC_nZ_EDIT,84,113,40,12,ES_AUTOHSCROLL | WS_DISABLED
+    EDITTEXT        IDC_xOuputIncrement_EDIT,39,199,22,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_yOutputIncrement_EDIT,39,213,22,12,ES_AUTOHSCROLL | 
+                    WS_DISABLED
+    EDITTEXT        IDC_zOutputIncrement_EDIT,39,226,22,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_p0_EDIT,241,22,40,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_t0_EDIT,241,37,40,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_mach0_EDIT,243,52,40,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_molWt0_EDIT,243,66,40,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_gamma0_EDIT1,243,80,40,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_theta0_EDIT,243,94,40,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_psi0_EDIT,243,108,40,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_z0_EDIT,243,122,40,12,ES_AUTOHSCROLL | WS_DISABLED
+    DEFPUSHBUTTON   "OK",IDOK,241,264,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,7,264,50,14
+    GROUPBOX        "File Input/Output",IDC_STATIC,7,7,152,52
+    GROUPBOX        "Initial Plane Properties",IDC_STATIC,171,7,120,140
+    LTEXT           "Geometry Input File",IDC_STATIC,15,24,62,8
+    LTEXT           "Output File",IDC_STATIC,44,41,35,8
+    GROUPBOX        "Grid Setup (Cylindrical Coordinates)",IDC_STATIC,7,71,
+                    129,62
+    LTEXT           "Number of Ray Pts",IDC_STATIC,19,100,60,8
+    LTEXT           "Radial Divisions",IDC_STATIC,27,87,51,8
+    LTEXT           "Axial Stations",IDC_STATIC,36,114,43,8
+    LTEXT           "Pressure (psia)",IDC_STATIC,189,24,47,8
+    LTEXT           "Temperature (R)",IDC_STATIC,185,39,52,8
+    LTEXT           "Mach Number",IDC_STATIC,191,54,46,8
+    LTEXT           "Mol. Wt.",IDC_STATIC,209,68,28,8
+    LTEXT           "Gamma",IDC_STATIC,213,82,25,8
+    LTEXT           "Axial Location (in)",IDC_STATIC,181,124,56,8
+    PUSHBUTTON      "Calculate Nozzle",IDC_exe_BUTTON,181,156,82,35
+    LTEXT           "Theta (deg)",IDC_STATIC,199,96,38,8
+    LTEXT           "Psi (deg)",IDC_STATIC,209,110,28,8
+    GROUPBOX        "Print Ouput Parameters",IDC_STATIC,7,186,111,72
+    LTEXT           "Every",IDC_STATIC,16,199,19,8
+    LTEXT           "Every",IDC_STATIC,16,215,19,8
+    LTEXT           "Point(s) in X",IDC_STATIC,65,199,38,8
+    LTEXT           "Point(s) in Y",IDC_STATIC,65,215,38,8
+    LTEXT           "Point(s) in Z",IDC_STATIC,65,229,38,8
+    LTEXT           "Every",IDC_STATIC,16,228,19,8
+    LTEXT           "Step Number",IDC_STATIC,175,202,42,8
+    LTEXT           "Total Steps",IDC_STATIC,181,214,37,8
+    EDITTEXT        IDC_step_EDIT,221,198,40,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_total_EDIT,221,211,40,12,ES_AUTOHSCROLL
+    GROUPBOX        "Surface Fit",IDC_STATIC,7,137,104,42
+    COMBOBOX        IDC_SurfaceFit_COMBO,23,154,70,53,CBS_DROPDOWN | 
+                    CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    EDITTEXT        IDC_stepStep_EDIT,39,239,22,12,ES_AUTOHSCROLL
+    LTEXT           "Every",IDC_STATIC,16,240,19,8
+    LTEXT           "Step Number",IDC_STATIC,66,241,42,8
+END
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "Authored by Tharen Rice under NASA GRC grant funding FG800\0"
+            VALUE "CompanyName", "Johns Hopkins University Applied Physics Laboratory\0"
+            VALUE "FileDescription", "3D_MOC MFC Application\0"
+            VALUE "FileVersion", "1, 0, 0, 1\0"
+            VALUE "InternalName", "3D_MOC\0"
+            VALUE "LegalCopyright", "Copyright (C) 2002\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "3D_MOC.EXE\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "3D_MOC Application\0"
+            VALUE "ProductVersion", "1, 0, 0, 1\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 228
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 48
+    END
+
+    IDD_3D_MOC_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 291
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 278
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog Info
+//
+
+IDD_3D_MOC_DIALOG DLGINIT
+BEGIN
+    IDC_SurfaceFit_COMBO, 0x403, 15, 0
+0x2039, 0x6f50, 0x6e69, 0x2074, 0x7053, 0x696c, 0x656e, "\000" 
+    IDC_SurfaceFit_COMBO, 0x403, 17, 0
+0x6c41, 0x206c, 0x6f50, 0x6e69, 0x2074, 0x7053, 0x696c, 0x656e, "\000" 
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_ABOUTBOX            "&About 3D_MOC..."
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#endif //_WIN32
+#include "res\3D_MOC.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"         // Standard components
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

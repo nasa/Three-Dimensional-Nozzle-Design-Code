@@ -1,0 +1,31 @@
+!MS$FREEFORM
+! Microsoft Developer Studio generated include file.
+! Used by 3D_MOC.rc
+!
+      integer, parameter :: IDM_ABOUTBOX                    = 16
+      integer, parameter :: IDD_ABOUTBOX                    = 100
+      integer, parameter :: IDS_ABOUTBOX                    = 101
+      integer, parameter :: IDD_MY3D_MOC_DIALOG             = 102
+      integer, parameter :: IDD_3D_MOC_DIALOG               = 102
+      integer, parameter :: IDR_MAINFRAME                   = 128
+      integer, parameter :: IDC_nDiv_EDIT                   = 1006
+      integer, parameter :: IDC_nZ_EDIT                     = 1007
+      integer, parameter :: IDC_p0_EDIT                     = 1008
+      integer, parameter :: IDC_t0_EDIT                     = 1009
+      integer, parameter :: IDC_xOuputIncrement_EDIT        = 1010
+      integer, parameter :: IDC_geomFile_EDIT               = 1011
+      integer, parameter :: IDC_summaryFile_EDIT            = 1012
+      integer, parameter :: IDC_nX_EDIT                     = 1013
+      integer, parameter :: IDC_mach0_EDIT                  = 1014
+      integer, parameter :: IDC_molWt0_EDIT                 = 1015
+      integer, parameter :: IDC_gamma0_EDIT1                = 1016
+      integer, parameter :: IDC_z0_EDIT                     = 1017
+      integer, parameter :: IDC_exe_BUTTON                  = 1018
+      integer, parameter :: IDC_theta0_EDIT                 = 1019
+      integer, parameter :: IDC_psi0_EDIT                   = 1020
+      integer, parameter :: IDC_yOutputIncrement_EDIT       = 1021
+      integer, parameter :: IDC_zOutputIncrement_EDIT       = 1022
+      integer, parameter :: IDC_stepStep_EDIT               = 1023
+      integer, parameter :: IDC_step_EDIT                   = 1025
+      integer, parameter :: IDC_total_EDIT                  = 1026
+      integer, parameter :: IDC_SurfaceFit_COMBO            = 1027
