@@ -1,0 +1,481 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#endif //_WIN32\r\n"
+    "#include ""res\\STT2001.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+//IDR_MAINFRAME           ICON    DISCARDABLE     "res\\STT2001.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 235, 55
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About STT2001"
+FONT 8, "MS Sans Serif"
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,11,17,20,20
+    LTEXT           "STT2001 Version 1.0",IDC_STATIC,40,10,119,8,SS_NOPREFIX
+    LTEXT           "Copyright (C) 2001",IDC_STATIC,40,25,119,8
+    DEFPUSHBUTTON   "OK",IDOK,178,7,50,14,WS_GROUP
+END
+
+IDD_STT2001_DIALOG DIALOGEX 0, 0, 410, 383
+STYLE DS_MODALFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | 
+    WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "Streamline Tracing Tool 2001"
+MENU IDR_MENU1
+FONT 8, "MS Sans Serif"
+BEGIN
+    EDITTEXT        IDC_SLFileName_EDIT,78,18,72,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_aThroat_EDIT,234,20,36,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_pAmbient_EDIT,234,34,36,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_IspIdeal_EDIT,234,48,36,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_MassFlow_EDIT,234,62,36,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_XSLStart_EDIT,54,118,24,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_YSLStart_EDIT,82,118,24,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_RSLStart_EDIT,110,118,24,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_XSLEnd_EDIT,54,133,24,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_YSLEnd_EDIT,82,133,24,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_RSLEnd_EDIT,110,133,24,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_XSLStep_EDIT,54,148,24,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_YSLStep_EDIT,82,148,24,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_RSLStep_EDIT,110,148,24,14,ES_AUTOHSCROLL
+    CONTROL         "",IDC_Constraint1_CHECK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,36,276,8,8
+    EDITTEXT        IDC_YC1_EDIT,54,274,31,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_RC1_EDIT,108,274,35,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_Alpha1_EDIT,145,274,31,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_Omega1_EDIT,179,274,31,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_nSL1_EDIT,213,274,31,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_XStart1_EDIT,247,274,26,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_XEnd1_EDIT,276,274,26,12,ES_AUTOHSCROLL
+    CONTROL         "",IDC_Throat1_CHECK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,314,276,16,8
+    CONTROL         "",IDC_Constraint2_CHECK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,36,290,8,8
+    EDITTEXT        IDC_YC2_EDIT,54,288,31,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_RC2_EDIT,108,288,35,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_Alpha2_EDIT,145,288,31,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_Omega2_EDIT,179,288,31,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_nSL2_EDIT,213,288,31,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_XStart2_EDIT,247,288,26,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_XEnd2_EDIT,276,288,26,12,ES_AUTOHSCROLL
+    CONTROL         "",IDC_Throat2_CHECK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,314,290,16,8
+    CONTROL         "",IDC_Constraint3_CHECK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,36,304,8,8
+    EDITTEXT        IDC_YC3_EDIT,54,302,31,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_RC3_EDIT,108,302,35,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_Alpha3_EDIT,145,302,31,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_Omega3_EDIT,179,302,31,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_nSL3_EDIT,213,302,31,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_XStart3_EDIT,247,302,26,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_XEnd3_EDIT,276,302,26,12,ES_AUTOHSCROLL
+    CONTROL         "",IDC_Throat3_CHECK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,314,304,16,8
+    CONTROL         "",IDC_Constraint4_CHECK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,36,318,8,8
+    EDITTEXT        IDC_YC4_EDIT,54,316,31,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_RC4_EDIT,108,316,35,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_Alpha4_EDIT,145,316,31,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_Omega4_EDIT,179,316,31,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_nSL4_EDIT,213,316,31,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_XStart4_EDIT,247,316,26,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_XEnd4_EDIT,276,316,26,12,ES_AUTOHSCROLL
+    CONTROL         "",IDC_Throat4_CHECK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,314,318,16,8
+    PUSHBUTTON      "Execute",IDC_EXE_BUTTON,293,7,102,21
+    DEFPUSHBUTTON   "OK",IDOK,68,360,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,291,360,50,14
+    EDITTEXT        IDC_ZC1_EDIT,88,274,18,12,ES_AUTOHSCROLL | WS_DISABLED
+    EDITTEXT        IDC_ZC2_EDIT,88,288,18,12,ES_AUTOHSCROLL | WS_DISABLED
+    EDITTEXT        IDC_ZC3_EDIT,88,302,18,12,ES_AUTOHSCROLL | WS_DISABLED
+    EDITTEXT        IDC_ZC4_EDIT,88,316,18,12,ES_AUTOHSCROLL | WS_DISABLED
+    EDITTEXT        IDC_SurfaceArea_EDIT,320,103,33,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_ProjectedArea_EDIT,320,117,33,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_integralPdA_EDIT,209,123,33,12,ES_AUTOHSCROLL
+    LTEXT           "YSL",IDC_STATIC,87,108,14,8
+    LTEXT           "Start Values",IDC_STATIC,12,121,38,8
+    LTEXT           "RSL",IDC_STATIC,114,108,16,8
+    LTEXT           "Start Angle",IDC_STATIC,152,256,19,16
+    LTEXT           "End Angle",IDC_STATIC,187,256,19,17
+    LTEXT           "Yc",IDC_STATIC,66,265,9,8
+    LTEXT           "Rc",IDC_STATIC,122,264,14,8
+    LTEXT           "Zc",IDC_STATIC,92,265,9,8
+    LTEXT           "X Start",IDC_STATIC,249,265,24,8
+    LTEXT           "X End",IDC_STATIC,279,265,21,9
+    LTEXT           "XSL",IDC_STATIC,60,108,13,8
+    LTEXT           "# of SLs",IDC_STATIC,215,265,27,8
+    LTEXT           "Streamline Data File:",IDC_STATIC,8,21,65,8
+    LTEXT           "Surface Area",IDC_STATIC,277,106,41,8
+    LTEXT           "Axial Projected Area",IDC_STATIC,252,120,64,8
+    LTEXT           "Integral PdA",IDC_STATIC,165,126,40,8
+    GROUPBOX        "Nozzle Parameter Output",IDC_STATIC,149,92,247,114
+    LTEXT           "Amb. Pressure (psia):",IDC_STATIC,164,37,69,8
+    EDITTEXT        IDC_Cxx_EDIT,209,184,33,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_IspCalc_EDIT,209,170,33,12,ES_AUTOHSCROLL
+    LTEXT           "Cfg",IDC_STATIC,194,187,11,8
+    LTEXT           "Calculated Isp",IDC_STATIC,159,173,46,8
+    LTEXT           "Throat Area:",IDC_STATIC,190,23,40,8
+    LTEXT           "Ideal Cfg Isp:",IDC_STATIC,190,51,43,8
+    PUSHBUTTON      "Symmetry Definition",IDC_SymDef_BUTTON,23,225,68,17
+    GROUPBOX        "Streamline Trimming Definition",IDC_STATIC,15,212,379,
+                    139
+    GROUPBOX        "Center of Known SL Flowfield",IDC_STATIC,7,96,136,93
+    GROUPBOX        "File Input",IDC_STATIC,7,7,148,85
+    GROUPBOX        "Other Inputs",IDC_STATIC,158,7,119,73
+    GROUPBOX        "Execution Status",IDC_STATIC,285,30,112,54
+    EDITTEXT        IDC_Status_EDIT,295,41,93,21,ES_CENTER | ES_MULTILINE | 
+                    ES_AUTOHSCROLL | ES_READONLY | WS_DISABLED | NOT 
+                    WS_BORDER
+    LTEXT           "Mass Flow:",IDC_STATIC,195,65,35,8
+    LTEXT           "End Values",IDC_STATIC,14,136,36,8
+    LTEXT           "Step",IDC_STATIC,35,151,15,8
+    LTEXT           "Enable",IDC_STATIC,28,265,23,8
+    LTEXT           "Throat?",IDC_STATIC,304,265,26,8
+    COMBOBOX        IDC_C1_COMBO,333,273,33,36,CBS_DROPDOWN | CBS_SORT | 
+                    WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Surface",IDC_STATIC,333,264,27,8
+    COMBOBOX        IDC_C2_COMBO,333,287,33,36,CBS_DROPDOWN | CBS_SORT | 
+                    WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_C3_COMBO,333,301,33,36,CBS_DROPDOWN | CBS_SORT | 
+                    WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_C4_COMBO,333,315,33,36,CBS_DROPDOWN | CBS_SORT | 
+                    WS_VSCROLL | WS_TABSTOP
+    EDITTEXT        IDC_ExitArea_EDIT,320,131,33,12,ES_AUTOHSCROLL
+    LTEXT           "Exit Area",IDC_STATIC,288,134,28,8
+    EDITTEXT        IDC_AreaRatio_EDIT,320,145,33,12,ES_AUTOHSCROLL
+    LTEXT           "Area Ratio",IDC_STATIC,283,148,33,8
+    EDITTEXT        IDC_MaxLength_EDIT,320,159,33,12,ES_AUTOHSCROLL
+    LTEXT           "Max Length",IDC_STATIC,279,162,37,8
+    CONTROL         "Progress1",IDC_PROGRESS,"msctls_progress32",WS_BORDER,
+                    301,68,80,8
+    CONTROL         "",IDC_MaxLengthC_CHECK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,216,228,8,8
+    EDITTEXT        IDC_MaxLengthC_EDIT,253,226,31,12,ES_AUTOHSCROLL
+    LTEXT           "Max X0",IDC_STATIC,226,228,24,8
+    LTEXT           "Min Y",IDC_STATIC,298,176,18,8
+    EDITTEXT        IDC_MinY_EDIT,320,173,33,12,ES_AUTOHSCROLL
+    LTEXT           "Max Y",IDC_STATIC,296,190,20,8
+    EDITTEXT        IDC_MaxY_EDIT,320,187,33,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_XAtMinY_EDIT,355,173,33,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_XAtMaxY_EDIT,355,187,33,12,ES_AUTOHSCROLL
+    LTEXT           "X",IDC_STATIC,368,165,8,8
+    LTEXT           "Friction Data File:",IDC_STATIC,18,60,55,8
+    EDITTEXT        IDC_FrictionFile_EDIT,78,58,72,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "Plots",IDC_Plot_BUTTON,361,116,30,25
+    EDITTEXT        IDC_GridSF_EDIT,363,226,23,12,ES_AUTOHSCROLL
+    LTEXT           "Grid Scale Factor",IDC_STATIC,303,228,56,8
+    EDITTEXT        IDC_XSLCurrentStr_EDIT,54,163,24,14,ES_AUTOHSCROLL | 
+                    WS_DISABLED
+    EDITTEXT        IDC_YSLCurrentStr_EDIT,82,163,24,14,ES_AUTOHSCROLL | 
+                    WS_DISABLED
+    EDITTEXT        IDC_RSLCurrentStr_EDIT,110,163,24,14,ES_AUTOHSCROLL | 
+                    WS_DISABLED
+    LTEXT           "Current",IDC_STATIC,25,165,24,8
+    EDITTEXT        IDC_XStatus_EDIT,169,226,29,12,ES_AUTOHSCROLL
+    LTEXT           "X Status",IDC_STATIC,137,228,28,8
+    CONTROL         "",IDC_Constraint5_CHECK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,36,332,8,8
+    EDITTEXT        IDC_YC5_EDIT,53,330,31,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_RC5_EDIT,108,330,35,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_Alpha5_EDIT,145,330,31,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_Omega5_EDIT,179,330,31,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_nSL5_EDIT,213,330,31,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_XStart5_EDIT,247,330,26,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_XEnd5_EDIT,276,330,26,12,ES_AUTOHSCROLL
+    CONTROL         "",IDC_Throat5_CHECK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,314,332,16,8
+    EDITTEXT        IDC_ZC5_EDIT,87,330,18,12,ES_AUTOHSCROLL | WS_DISABLED
+    COMBOBOX        IDC_C5_COMBO,333,329,33,36,CBS_DROPDOWN | CBS_SORT | 
+                    WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Output Files Prefix:",IDC_STATIC,13,74,60,8
+    EDITTEXT        IDC_filePrefix_EDIT,78,72,72,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_MOCSummaryFile_EDIT,78,44,72,12,ES_AUTOHSCROLL
+    LTEXT           "MOC Summary File:",IDC_STATIC,10,47,63,8
+    EDITTEXT        IDC_frictionForce_EDIT,209,137,33,12,ES_AUTOHSCROLL
+    LTEXT           "Friction Force",IDC_STATIC,161,139,44,8
+    EDITTEXT        IDC_throatForce_EDIT,209,109,33,12,ES_AUTOHSCROLL
+    LTEXT           "Throat Stream\n       Thrust",IDC_STATIC,160,107,49,17
+    LTEXT           "P exit Force",IDC_STATIC,166,154,38,8
+    EDITTEXT        IDC_pExitForce_EDIT,209,152,33,12,ES_AUTOHSCROLL
+    CONTROL         "",IDC_contourFlag_CHECK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,216,245,8,8
+    LTEXT           "Crop nozzle due to SL trimming",IDC_STATIC,227,245,98,8
+    LTEXT           "MOC Data File:",IDC_STATIC,24,33,49,8
+    EDITTEXT        IDC_MOCGridFile_EDIT,78,31,72,12,ES_AUTOHSCROLL
+END
+
+IDD_SYMDEF_DIALOG DIALOG DISCARDABLE  0, 0, 185, 151
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Symmetry Definition"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,7,130,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,128,130,50,14
+    LTEXT           "# of  Occurences/360 deg",IDC_STATIC,25,23,78,8
+    LTEXT           "Line of Symmetry",IDC_STATIC,16,53,56,8
+    EDITTEXT        IDC_nRev_EDIT,107,20,31,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_YSim_EDIT,74,56,31,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_ZSim_EDIT,108,56,20,14,ES_AUTOHSCROLL | WS_DISABLED
+    EDITTEXT        IDC_RSim_EDIT,131,56,31,14,ES_AUTOHSCROLL
+    LTEXT           "Y0",IDC_STATIC,86,47,9,8
+    LTEXT           "Z0",IDC_STATIC,113,47,9,8
+    LTEXT           "Radius",IDC_STATIC,136,47,23,8
+    LTEXT           "along X-axis",IDC_STATIC,22,64,38,8
+    LTEXT           "Streamlines to match for rotation calculation",
+                    IDC_STATIC,23,84,138,8
+    EDITTEXT        IDC_SL1Match_EDIT,66,105,23,14,ES_AUTOHSCROLL | 
+                    WS_DISABLED
+    EDITTEXT        IDC_SL2Match_EDIT,96,105,23,14,ES_AUTOHSCROLL
+    LTEXT           "SL1",IDC_STATIC,71,96,14,8
+    LTEXT           "SL2",IDC_STATIC,101,96,14,8
+END
+
+IDD_Plot_DIALOG DIALOG DISCARDABLE  0, 0, 404, 263
+STYLE DS_MODALFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | 
+    WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Centerline Plots"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,68,242,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,304,242,50,14
+END
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "CompanyName", "\0"
+            VALUE "FileDescription", "STT2001 MFC Application\0"
+            VALUE "FileVersion", "1, 0, 0, 1\0"
+            VALUE "InternalName", "STT2001\0"
+            VALUE "LegalCopyright", "Copyright (C) 2001\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "STT2001.EXE\0"
+            VALUE "ProductName", "STT2001 Application\0"
+            VALUE "ProductVersion", "1, 0, 0, 1\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 228
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 48
+    END
+
+    IDD_STT2001_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 403
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 374
+    END
+
+    IDD_SYMDEF_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 178
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 144
+    END
+
+    IDD_Plot_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 397
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 256
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MENU1 MENU DISCARDABLE 
+BEGIN
+    POPUP "File"
+    BEGIN
+        MENUITEM "Open",                        ID_FILE_OPEN
+        MENUITEM "Save",                        ID_FILE_SAVE
+        MENUITEM "Save As",                     ID_FILE_SAVEAS
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog Info
+//
+
+IDD_STT2001_DIALOG DLGINIT
+BEGIN
+    IDC_C1_COMBO, 0x403, 6, 0
+0x6e49, 0x656e, 0x0072, 
+    IDC_C1_COMBO, 0x403, 6, 0
+0x754f, 0x6574, 0x0072, 
+    IDC_C2_COMBO, 0x403, 6, 0
+0x6e49, 0x656e, 0x0072, 
+    IDC_C2_COMBO, 0x403, 6, 0
+0x754f, 0x6574, 0x0072, 
+    IDC_C3_COMBO, 0x403, 6, 0
+0x6e49, 0x656e, 0x0072, 
+    IDC_C3_COMBO, 0x403, 6, 0
+0x754f, 0x6574, 0x0072, 
+    IDC_C4_COMBO, 0x403, 6, 0
+0x6e49, 0x656e, 0x0072, 
+    IDC_C4_COMBO, 0x403, 6, 0
+0x754f, 0x6574, 0x0072, 
+    IDC_C5_COMBO, 0x403, 6, 0
+0x6e49, 0x656e, 0x0072, 
+    IDC_C5_COMBO, 0x403, 6, 0
+0x754f, 0x6574, 0x0072, 
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_ABOUTBOX            "&About STT2001..."
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#endif //_WIN32
+#include "res\STT2001.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"         // Standard components
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

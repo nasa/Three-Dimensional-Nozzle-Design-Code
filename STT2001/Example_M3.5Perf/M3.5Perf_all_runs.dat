@@ -1,0 +1,2 @@
+Prefix 	 ZSL 	 XSL 	 YSL 	 RSL 	 ISP 	 Cfg 	 Surface Area (in2) 	Throat Area (in2)	 Axial Projected Area (in2)	 Exit Area (in2)	Area Ratio	 Area Ratio(MOC)	 Mass Flow (lbm/s)	Throat Momentum (lbf)	 Pressure Force (lbf)	 Pa Ae Loss (lbf)	Friction Loss (lbf) 	 Max Length (in) 	 Min Y(in) 	 Max Y(in)	X @ Min Y(in) 	 X @ Max Y(in) 	 X Status (in) 	 XStatus Ymin (in)	XStatus Theta @ Min Y (deg)
+MOC_sl.plt	0	0	0	1	23.9429	0.342287	167.08	0.7854	17.7489	18.5343	23.5986	6.73652	35.7	492.024	531.764	-37.0687	-131.956	12.5363	-2.59548	2.59548	12.5363	12.5363	0	-1.00365	-2.44929
