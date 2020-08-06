@@ -1,0 +1,337 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#endif //_WIN32\r\n"
+    "#include ""res\\MOC_Grid.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+// Tharen Rice MAY 2020 edit: Comments out this line
+//IDR_MAINFRAME           ICON    DISCARDABLE     "res\\MOC_Grid.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 235, 81
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About MOC_Grid"
+FONT 8, "MS Sans Serif"
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,11,17,21,20
+    LTEXT           "MOC_Grid Version 1.0",IDC_STATIC,40,10,119,8,
+                    SS_NOPREFIX
+    LTEXT           "Copyright (C) 2001",IDC_STATIC,41,24,119,8
+    DEFPUSHBUTTON   "OK",IDOK,178,7,50,14,WS_GROUP
+    LTEXT           "Development funded by NASA GRC Grant",IDC_STATIC,41,39,
+                    134,8
+    LTEXT           "Task: FG888BXX",IDC_STATIC,41,47,56,8
+    LTEXT           "Devloped by: Tharen Rice",IDC_STATIC,42,62,84,8
+END
+
+IDD_MOC_GRID_DIALOG DIALOGEX 0, 0, 377, 303
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "2D Method of Characteristics Grid Generation "
+MENU IDR_MENU1
+FONT 8, "MS Sans Serif"
+BEGIN
+    CONTROL         "Perfect",IDC_perfect_RADIO,"Button",BS_AUTORADIOBUTTON | 
+                    WS_GROUP,18,66,39,10
+    CONTROL         "Cone/Wedge",IDC_cone_RADIO,"Button",BS_AUTORADIOBUTTON,
+                    18,129,59,10
+    CONTROL         "RAO (Optimum Thrust)",IDC_minLength_RADIO,"Button",
+                    BS_AUTORADIOBUTTON,18,77,87,10
+    CONTROL         "Set End Point",IDC_endPoint_RADIO,"Button",
+                    BS_AUTORADIOBUTTON,18,89,59,10
+    EDITTEXT        IDC_xE_EDIT,20,112,40,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_rE_EDIT,66,112,40,12,ES_AUTOHSCROLL
+    CONTROL         "Exit Mach",IDC_exitMach_RADIO,"Button",
+                    BS_AUTORADIOBUTTON | WS_GROUP,128,20,47,10
+    CONTROL         "Area Ratio",IDC_eps_RADIO,"Button",BS_AUTORADIOBUTTON,
+                    128,33,49,10
+    CONTROL         "Xend/R*",IDC_length_RADIO,"Button",BS_AUTORADIOBUTTON,
+                    128,46,44,10
+    CONTROL         "Ptotal/Pexit",IDC_pExit_RADIO,"Button",
+                    BS_AUTORADIOBUTTON,128,59,53,10
+    EDITTEXT        IDC_mDesign_EDIT,183,19,40,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_eps_EDIT,183,32,40,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_length_EDIT,183,45,40,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_pExit_EDIT,183,58,40,12,ES_AUTOHSCROLL
+    CONTROL         "Axisymmetric",IDC_Axi_RADIO,"Button",BS_AUTORADIOBUTTON | 
+                    WS_GROUP,22,21,56,10
+    CONTROL         "Planar",IDC_2D_RADIO,"Button",BS_AUTORADIOBUTTON,22,34,
+                    36,10
+    LTEXT           "Number of Starting Characteristics",IDC_STATIC,249,209,
+                    108,8
+    EDITTEXT        IDC_nC_EDIT,249,217,30,12,ES_AUTOHSCROLL
+    LTEXT           "UpStream Radius/R*",IDC_STATIC,131,94,68,8
+    EDITTEXT        IDC_RWTU_EDIT,131,102,32,12,ES_AUTOHSCROLL
+    LTEXT           "DownStream Radius/R*",IDC_STATIC,131,119,77,8
+    EDITTEXT        IDC_RWTD_EDIT,131,127,31,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_pres_i_EDIT,319,35,40,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_temp_i_EDIT,319,48,40,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_molWt_i_EDIT,319,61,40,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_gamma_i_EDIT,319,74,40,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_pAmb_EDIT,319,87,40,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_nRRCAboveBD_EDIT,325,180,32,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_dTLimit_EDIT,325,193,32,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "Calculate MOC Grid",IDC_CalcMOC_BUTTON,48,223,97,49,0,
+                    WS_EX_DLGMODALFRAME
+    DEFPUSHBUTTON   "Exit",IDOK,7,282,41,14
+    GROUPBOX        "Nozzle Geometry",IDC_STATIC,8,7,87,43
+    GROUPBOX        "Throat Geometry",IDC_STATIC,119,81,102,64
+    GROUPBOX        "Flow Properties",IDC_STATIC,250,7,119,126
+    LTEXT           "Pressure (psia)",IDC_STATIC,269,37,47,8
+    LTEXT           "Temperature (R)",IDC_STATIC,263,50,52,8
+    LTEXT           "Mol. Wt",IDC_STATIC,289,63,26,8
+    LTEXT           "Gamma",IDC_STATIC,291,76,25,8
+    LTEXT           "DTHETAB Max (deg)",IDC_STATIC,251,198,68,8
+    LTEXT           "P ambient (psia)",IDC_STATIC,265,90,51,8
+    GROUPBOX        "Nozzle Type",IDC_STATIC,7,53,107,107,WS_GROUP
+    GROUPBOX        "Design Parameter",IDC_STATIC,119,7,117,71
+    LTEXT           "XEnd/R*",IDC_STATIC,20,102,30,8
+    LTEXT           "REnd/R*",IDC_STATIC,66,102,30,8
+    LTEXT           "# of RRC above BD",IDC_STATIC,253,182,65,8
+    GROUPBOX        "MOC Limiters",IDC_STATIC,240,150,130,87
+    EDITTEXT        IDC_nSLi_EDIT,15,184,27,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_nSLj_EDIT,61,184,28,12,ES_AUTOHSCROLL
+    LTEXT           "Radial",IDC_STATIC,17,176,21,8
+    LTEXT           "Axial",IDC_STATIC,63,176,16,8
+    GROUPBOX        "Number of Output Streamlines",IDC_STATIC,7,165,108,38
+    LTEXT           "Velocity (ft/s)",IDC_STATIC,273,102,42,8
+    EDITTEXT        IDC_vel_EDIT,319,100,40,12,ES_AUTOHSCROLL
+    CONTROL         "Throat Conditions?",IDC_throat_CHECK,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,273,21,75,10
+    GROUPBOX        "Print Option",IDC_STATIC,120,149,99,34
+    COMBOBOX        IDC_Print_COMBO,128,162,48,39,CBS_DROPDOWN | WS_VSCROLL | 
+                    WS_TABSTOP
+    LTEXT           "THETAB Guess",IDC_STATIC,265,169,52,8
+    EDITTEXT        IDC_THETAB_EDIT,325,166,32,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_coneAngle_EDIT,69,140,40,12,ES_AUTOHSCROLL
+    LTEXT           "Half Angle (deg)",IDC_STATIC,14,142,52,8
+    PUSHBUTTON      "Run Streamline \n  Tracing Tool",IDC_STTRun_BUTTON,265,
+                    259,76,23,BS_CENTER | BS_VCENTER | BS_MULTILINE
+    LTEXT           "Print Mode = FULL to Enable STT Button",IDC_STATIC,239,
+                    288,131,8
+    EDITTEXT        IDC_ispIdeal_EDIT,319,113,40,12,ES_AUTOHSCROLL
+    LTEXT           "Ideal Isp (lbf-s/lbm)",IDC_STATIC,255,115,60,8
+END
+
+IDD_MOCPlot_DIALOG DIALOG DISCARDABLE  0, 0, 334, 199
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Nozzle Contour"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,143,178,50,14
+END
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "CompanyName", "\0"
+            VALUE "FileDescription", "MOC_Grid MFC Application\0"
+            VALUE "FileVersion", "1, 0, 0, 1\0"
+            VALUE "InternalName", "MOC_Grid\0"
+            VALUE "LegalCopyright", "Copyright (C) 2001\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "MOC_Grid.EXE\0"
+            VALUE "ProductName", "MOC_Grid Application\0"
+            VALUE "ProductVersion", "1, 0, 0, 1\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 228
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 74
+    END
+
+    IDD_MOC_GRID_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 370
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 296
+    END
+
+    IDD_MOCPlot_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 327
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 192
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog Info
+//
+
+IDD_MOC_GRID_DIALOG DLGINIT
+BEGIN
+    IDC_Print_COMBO, 0x403, 7, 0
+0x6f4e, 0x6d72, 0x6c61, "\000" 
+    IDC_Print_COMBO, 0x403, 5, 0
+0x7546, 0x6c6c, "\000" 
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MENU1 MENU DISCARDABLE 
+BEGIN
+    POPUP "File"
+    BEGIN
+        MENUITEM "Open",                        ID_FILE_OPEN
+        MENUITEM "Save",                        ID_FILE_SAVE
+        MENUITEM "Save As",                     ID_FILE_SAVEAS
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDP_OLE_INIT_FAILED     "OLE initialization failed.  Make sure that the OLE libraries are the correct version."
+    IDS_ABOUTBOX            "&About MOC_Grid..."
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#endif //_WIN32
+#include "res\MOC_Grid.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"         // Standard components
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

@@ -1,0 +1,42 @@
+// MOC_Grid.odl : type library source for MOC_Grid.exe
+
+// This file will be processed by the MIDL compiler to produce the
+// type library (MOC_Grid.tlb).
+
+[ uuid(A3077126-796C-494C-8B96-954025D08FD1), version(1.0) ]
+library MOC_Grid
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+
+	//  Primary dispatch interface for CMOC_GridDoc
+	
+	[ uuid(64AD481E-9EB6-4090-9F6C-D9AB592DD003) ]
+	dispinterface IMOC_Grid
+	{
+		properties:
+			// NOTE - ClassWizard will maintain property information here.
+			//    Use extreme caution when editing this section.
+			//{{AFX_ODL_PROP(CMOC_GridDlgAutoProxy)
+			//}}AFX_ODL_PROP
+			
+		methods:
+			// NOTE - ClassWizard will maintain method information here.
+			//    Use extreme caution when editing this section.
+			//{{AFX_ODL_METHOD(CMOC_GridDlgAutoProxy)
+			//}}AFX_ODL_METHOD
+
+	};
+
+	//  Class information for CMOC_GridDoc
+	
+	[ uuid(1506B334-8117-4B15-A2BA-2C0D344ED59B) ]
+	coclass MOC_Grid
+	{
+		[default] dispinterface IMOC_Grid;
+	};
+
+	//{{AFX_APPEND_ODL}}
+	//}}AFX_APPEND_ODL}}
+};
