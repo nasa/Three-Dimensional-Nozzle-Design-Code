@@ -127,6 +127,10 @@ BEGIN
     LTEXT           "Gamma",IDC_STATIC,213,82,25,8
     LTEXT           "Axial Location (in)",IDC_STATIC,181,124,56,8
     PUSHBUTTON      "Calculate Nozzle",IDC_exe_BUTTON,181,156,82,35
+    PUSHBUTTON      "Open MOC_Grid Folder...",IDC_openFolder_BUTTON,130,232,
+                    161,14
+    LTEXT           "Output folder: (not chosen yet)",IDC_outDir_STATIC,130,
+                    249,161,12,SS_PATHELLIPSIS
     LTEXT           "Theta (deg)",IDC_STATIC,199,96,38,8
     LTEXT           "Psi (deg)",IDC_STATIC,209,110,28,8
     GROUPBOX        "Print Ouput Parameters",IDC_STATIC,7,186,111,72

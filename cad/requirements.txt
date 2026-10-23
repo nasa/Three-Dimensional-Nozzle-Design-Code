@@ -1,0 +1,3 @@
+numpy>=1.23
+ezdxf>=1.1
+cadquery>=2.4      # optional: only needed for the STEP solids (--no-step skips them)

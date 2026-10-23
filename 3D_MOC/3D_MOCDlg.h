@@ -54,6 +54,13 @@ public:
 protected:
 	HICON m_hIcon;
 	C3D_MOCGridThread *pMocThread;
+	CString m_OutputDir;		// folder that holds the MOC_Grid results; all output goes here
+	BOOL OpenOutputFolder(const CString& folder, BOOL quiet);
+	BOOL FillFromMocGrid(const CString& folder, CString& note);
+	BOOL Load3DInputFile(const CString& path);
+	BOOL Write3DInputFile(const CString& path);
+	BOOL ChooseOutputFolder();
+	void ShowOutputFolder();
 	//Tharen Rice May 2020. commented out the next line and added the 2nd
 	//void UpdateStepCounter(WPARAM w,LPARAM l); // w = step, l = total
 	afx_msg LRESULT UpdateStepCounter(WPARAM w, LPARAM l); // w = step, l = total
@@ -65,6 +72,7 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	afx_msg void OnexeBUTTON();
+	afx_msg void OnOpenFolderBUTTON();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

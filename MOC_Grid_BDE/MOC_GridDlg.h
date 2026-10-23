@@ -30,6 +30,7 @@ public:
 	CEdit	m_nSLj_EDIT;
 	CEdit	m_nSLi_EDIT;
 	CButton	m_STTRun_BUTTON;
+	CButton	m_3DRun_BUTTON;
 	CEdit	m_coneAngle_EDIT;
 	CComboBox	m_print_COMBO;
 	CButton	m_throat_CHECK;
@@ -89,6 +90,10 @@ protected:
 	BOOL CanExit();
 	CString m_DataFileName;
 	void UpdateScreen( void);
+	CString m_OutputDir;		// folder that holds all of the results of the last run
+	BOOL ReadInputFile(const CString& path);
+	BOOL WriteInputFile(const CString& path);
+	BOOL WriteSTTInputFile(const CString& prefix);
 	// Generated message map functions
 	//{{AFX_MSG(CMOC_GridDlg)
 	virtual BOOL OnInitDialog();
@@ -115,6 +120,7 @@ protected:
 	afx_msg void OnFileSave();
 	afx_msg void OnFileSaveas();
 	afx_msg void OnSTTRunBUTTON();
+	afx_msg void On3DRunBUTTON();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

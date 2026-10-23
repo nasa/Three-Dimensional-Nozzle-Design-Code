@@ -1,0 +1,35 @@
+This is the summary file for STT2001
+
+MOC DATA for a full nozzle
+Throat Radius (in):	1
+Mass Flow (lbm/s):	9.62684
+Area Ratio:	1.67002
+Exit Area (in2):	5.24654
+Surface Area (in2):	28.1773
+2-D Stream Thrust @ throat(lbf):	412.281
+Stream Thrust @ Exit (lbf):	515.489
+Ambient Pressure (psia):	14.7
+Gross Thrust @ exit(lbf):	0
+Gross ISP at Exit (lbf-sec/lbm):	53.1149
+
+STT2001 Calculated Parameters
+Nozzle Surface Area (in2):	28.1038
+Nozzle Throat Area (in2):	0.785398
+Nozzle Wall Axial Projected Area (in2):	2.10224
+Nozzle Exit Area (in2):	2.88764
+Nozzle Area Ratio:	3.67665
+Mass Flow (lbm/s):	9.62684
+Throat Thrust(lbf):	103.07
+Pressure Force (lbf):	54.5151
+Exit Stream Thrust (lbf):	157.585
+Pa Ae Loss (lbf):	-42.4483
+Exit Gross Thrust (lbf):	115.137
+Friction Loss (lbf):	-22.1957
+Exit Gross Thrust w/ Friction (lbf):	92.9413
+
+Calculated Isp (lbf-s/lbm)	9.65439
+Ideal Isp (lbf-s/lbm)	200
+Cfg	0.048272
+Losses Summary	Cfg Loss	(% of Total Loss)
+Friction Loss	0.011528	34.3353
+Exit Pressure Loss	0.0220468	65.6647

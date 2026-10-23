@@ -48,6 +48,7 @@
 #define IDC_coneAngle_EDIT              1044
 #define IDC_STTRun_BUTTON               1045
 #define IDC_angle_EDIT                  1046
+#define IDC_3DRun_BUTTON                1047
 #define ID_FILE_SAVEAS                  32773
 
 // Next default values for new objects
@@ -56,7 +57,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        137
 #define _APS_NEXT_COMMAND_VALUE         32774
-#define _APS_NEXT_CONTROL_VALUE         1046
+#define _APS_NEXT_CONTROL_VALUE         1048
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

@@ -1,0 +1,20 @@
+﻿  DlgProxy.cpp
+  _WIN32_WINNT not defined. Defaulting to _WIN32_WINNT_MAXVER (see WinSDKVer.h)
+  MOCPlotDialog.cpp
+  _WIN32_WINNT not defined. Defaulting to _WIN32_WINNT_MAXVER (see WinSDKVer.h)
+  MOC_Grid.cpp
+  _WIN32_WINNT not defined. Defaulting to _WIN32_WINNT_MAXVER (see WinSDKVer.h)
+  MOC_GridCalc_BDE.cpp
+  _WIN32_WINNT not defined. Defaulting to _WIN32_WINNT_MAXVER (see WinSDKVer.h)
+  MOC_GridCalc_BDE_IO.cpp
+  _WIN32_WINNT not defined. Defaulting to _WIN32_WINNT_MAXVER (see WinSDKVer.h)
+  MOC_GridDlg.cpp
+  _WIN32_WINNT not defined. Defaulting to _WIN32_WINNT_MAXVER (see WinSDKVer.h)
+  Generating code
+  42 of 559 functions ( 7.5%) were compiled, the rest were copied from previous compilation.
+    1 functions were new in current compilation
+    21 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  MOC_Grid.vcxproj -> C:\Users\asawhney2\Documents\GitHub\Three-Dimensional-Nozzle-Design-Code\MOC_Grid_BDE\x64\Release\MOC_Grid.exe
+  Copying MOC_Grid.exe to C:\Users\asawhney2\Documents\GitHub\Three-Dimensional-Nozzle-Design-Code\compiled\MOC_Grid
+          1 file(s) copied.

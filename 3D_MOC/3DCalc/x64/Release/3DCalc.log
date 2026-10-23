@@ -1,0 +1,13 @@
+﻿  3D_MOC.cpp
+  _WIN32_WINNT not defined. Defaulting to _WIN32_WINNT_MAXVER (see WinSDKVer.h)
+C:\Users\asawhney2\Documents\GitHub\Three-Dimensional-Nozzle-Design-Code\3D_MOC\3D_MOC.cpp(60,16): warning C4244: 'initializing': conversion from 'INT_PTR' to 'int', possible loss of data
+C:\Users\asawhney2\Documents\GitHub\Three-Dimensional-Nozzle-Design-Code\3D_MOC\3D_MOC.cpp(52,2): warning C4996: 'CWinApp::Enable3dControls': CWinApp::Enable3dControls is no longer needed. You should remove this call.
+  3D_MOCDlg.cpp
+  _WIN32_WINNT not defined. Defaulting to _WIN32_WINNT_MAXVER (see WinSDKVer.h)
+  3D_MOCGridThread.cpp
+  _WIN32_WINNT not defined. Defaulting to _WIN32_WINNT_MAXVER (see WinSDKVer.h)
+  Generating Code...
+  3DCalc.vcxproj -> C:\Users\asawhney2\Documents\GitHub\Three-Dimensional-Nozzle-Design-Code\3D_MOC\x64\Release\3DCalc.exe
+  Copying 3DCalc.exe to C:\Users\asawhney2\Documents\GitHub\Three-Dimensional-Nozzle-Design-Code\compiled\3D_MOC
+          1 file(s) copied.
+          1 file(s) copied.
