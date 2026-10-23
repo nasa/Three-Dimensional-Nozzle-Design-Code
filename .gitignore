@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/3D_MOC/.vs/3DCalc/v17
+
+# Python viewer
+__pycache__/
+.pytest_cache/

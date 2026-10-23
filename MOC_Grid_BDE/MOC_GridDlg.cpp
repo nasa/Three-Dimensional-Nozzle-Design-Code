@@ -5,10 +5,14 @@
 #include "MOC_Grid.h"
 #include "MOC_GridDlg.h"
 #include "DlgProxy.h"
+#include <afxdlgs.h>
 #include "MOC_GridCalc_BDE.h"
 // Tharen Rice May 2020 Change: New call for fstream
 //#include "fstream.h"
 #include <fstream>
+#include <sstream>
+#include <string>
+#include <cctype>
 using namespace std;
 // End of changes
 #include "direct.h"
@@ -121,6 +125,7 @@ void CMOC_GridDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_nSLj_EDIT, m_nSLj_EDIT);
 	DDX_Control(pDX, IDC_nSLi_EDIT, m_nSLi_EDIT);
 	DDX_Control(pDX, IDC_STTRun_BUTTON, m_STTRun_BUTTON);
+	DDX_Control(pDX, IDC_3DRun_BUTTON, m_3DRun_BUTTON);
 	DDX_Control(pDX, IDC_coneAngle_EDIT, m_coneAngle_EDIT);
 	DDX_Control(pDX, IDC_Print_COMBO, m_print_COMBO);
 	DDX_Control(pDX, IDC_throat_CHECK, m_throat_CHECK);
@@ -206,6 +211,7 @@ BEGIN_MESSAGE_MAP(CMOC_GridDlg, CDialog)
 	ON_COMMAND(ID_FILE_SAVE, OnFileSave)
 	ON_COMMAND(ID_FILE_SAVEAS, OnFileSaveas)
 	ON_BN_CLICKED(IDC_STTRun_BUTTON, OnSTTRunBUTTON)
+	ON_BN_CLICKED(IDC_3DRun_BUTTON, On3DRunBUTTON)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -250,6 +256,7 @@ BOOL CMOC_GridDlg::OnInitDialog()
 	m_print_COMBO.SetCurSel(0);
 	OnSelchangePrintCOMBO();
 	m_STTRun_BUTTON.EnableWindow(0);
+	m_3DRun_BUTTON.EnableWindow(0);
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -500,22 +507,83 @@ void CMOC_GridDlg::OnConeRADIO()
 	return;	
 }
 
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//	Helpers for the MOC_Grid -> STT2001 hand-off
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+//	Returns the full path of a file in a sibling tool folder. The programs are installed
+//	side by side (...\MOC_Grid\MOC_Grid.exe, ...\STT2001\STT2001.exe), so this takes the
+//	folder holding this exe, goes up one level and appends 'relative'.
+static CString GetToolPath(const char* relative)
+{
+	TCHAR buf[MAX_PATH];
+	GetModuleFileName(NULL, buf, MAX_PATH);
+	CString p(buf);
+	int s = p.ReverseFind('\\');
+	if (s > 0) p = p.Left(s);		//	...\MOC_Grid
+	s = p.ReverseFind('\\');
+	if (s > 0) p = p.Left(s);		//	...  (the folder holding all of the tools)
+	p += "\\";
+	p += relative;
+	return p;
+}
+
+//	TRUE if any number in the file is NaN or infinity. A MOC run that fails to converge
+//	writes these, and the downstream programs cannot use such a file.
+static BOOL FileHasInvalidNumbers(const CString& name)
+{
+	ifstream f((LPCTSTR)name);
+	if (!f.is_open()) return FALSE;
+	string line, tok;
+	while (getline(f, line))
+	{
+		istringstream ss(line);
+		while (ss >> tok)
+		{
+			size_t st = (tok[0] == '-' || tok[0] == '+') ? 1 : 0;
+			string u;
+			for (size_t i = st; i < tok.size(); i++) u += (char)tolower((unsigned char)tok[i]);
+			if (u == "nan" || u == "inf" || u == "infinity" 
+				|| u.compare(0, 4, "nan(") == 0 || u.compare(0, 4, "inf(") == 0) return TRUE;
+		}
+	}
+	return FALSE;
+}
+
 void CMOC_GridDlg::OnCalcMOCBUTTON() 
 {
 	int flag = 0;
 	m_STTRun_BUTTON.EnableWindow(0);
-	//	This is the function that starts the whole calculation process
+	m_3DRun_BUTTON.EnableWindow(0);
+	if (!UpdateData(TRUE)) return;	//	an input was out of range; the user has been told
+
+	//	1. Ask where all of the output files should go. All of the files that MOC_Grid
+	//	writes use plain names, so making that folder the working directory sends them there.
+	CFolderPickerDialog folderDlg(m_OutputDir.IsEmpty() ? (LPCTSTR)NULL : (LPCTSTR)m_OutputDir, 0, this, 0);
+	folderDlg.m_ofn.lpstrTitle = _T("Choose the folder where all of the output files will be saved");
+	if (folderDlg.DoModal() != IDOK) return;
+	m_OutputDir = folderDlg.GetPathName();
+	if (!SetCurrentDirectory(m_OutputDir))
+	{
+		AfxMessageBox("That folder cannot be used. Please choose another one.");
+		return;
+	}
+
+	//	2. Save the inputs first, so they are kept even if the calculation fails.
+	m_DataFileName = m_OutputDir + "\\MOC_Grid.inp";
+	WriteInputFile(m_DataFileName);
+
+	//	3. Run the calculation. This is the function that starts the whole process.
 	MOC_GridCalc *moc = new MOC_GridCalc;
-	UpdateData(TRUE);
 	m_CalcMOC_BUTTON.EnableWindow(0);
-	if(moc->SetInitialProperties( m_pres_i, m_temp_i,  m_molWt_i, 
+	if(!moc->SetInitialProperties( m_pres_i, m_temp_i,  m_molWt_i, 
 		 m_gamma_i,  m_pAmb,  m_nC,  m_RWTU,  m_RWTD,  m_dTLimit, m_nRRCAboveBD, 
-		 m_nSLi, m_nSLj, m_vel, m_throat_CHECK.GetCheck(), m_ispIdeal));
-		
-	else 
+		 m_nSLi, m_nSLj, m_vel, m_throat_CHECK.GetCheck(), m_ispIdeal))
 	{
 		AfxMessageBox("Could not set properties");
-		exit(1);
+		delete moc;
+		m_CalcMOC_BUTTON.EnableWindow(1);
+		return;
 	}
 
 	//	Set the design variable, designValues[0] and [1] to the correct values depending on the 
@@ -537,12 +605,61 @@ void CMOC_GridDlg::OnCalcMOCBUTTON()
 	moc->SetSolutionParameters(  nozzleGeom,  nozzleType ,  designParam,  designValues[0],
 			 designValues[1], m_thetaBi);	
 	moc->SetPrintMode(m_print_COMBO.GetCurSel());
-	flag = moc->CreateMOCGrid();
+	flag = moc->CreateMOCGrid();	//	shows the nozzle plot when it is done
 			
 	m_CalcMOC_BUTTON.EnableWindow(1);
-	
-	if (flag && m_print_COMBO.GetCurSel()) m_STTRun_BUTTON.EnableWindow(1);
 	delete moc;
+
+	//	4. Report what happened
+	CString msg;
+	if (!flag)
+	{
+		AfxMessageBox("The MOC calculation did not complete. Try different inputs.");
+		return;
+	}
+	if (FileHasInvalidNumbers("summary.out") || FileHasInvalidNumbers("MOC_SL.plt") 
+		|| FileHasInvalidNumbers("MOC_Grid.plt"))
+	{
+		msg = "The calculation did not converge. Part of the solution is not a number (NaN), ";
+		msg += "so these results cannot be used for streamline tracing.\n\n";
+		msg += "Try different inputs (for example a different exit Mach number or nozzle type, ";
+		msg += "more starting characteristics, or a smaller DTHETAB Max).\n\n";
+		msg += "Your inputs were saved to:\n" + m_DataFileName;
+		AfxMessageBox(msg);
+		return;
+	}
+	//	3D_MOC only needs summary.out and Summary.plt, which every good run writes
+	m_3DRun_BUTTON.EnableWindow(1);
+	if (!m_print_COMBO.GetCurSel())
+	{
+		msg = "The results were saved to:\n" + m_OutputDir + "\n\n";
+		msg += "To trace streamlines, set the Print Option to Full and calculate again.\n";
+		msg += "To run the 3D MOC tool on this nozzle, click 'Run 3D MOC'.";
+		AfxMessageBox(msg);
+		return;
+	}
+
+	//	5. Get the folder ready for the streamline tracing tool: a copy of the friction
+	//	table (never overwritten, so edits to it are kept) and a ready-to-run STT2001.inp
+	CString friction = GetToolPath("STT2001\\friction_table.txt");
+	if (!CopyFile(friction, m_OutputDir + "\\friction_table.txt", TRUE) 
+		&& GetLastError() != ERROR_FILE_EXISTS)
+	{
+		AfxMessageBox("Could not find friction_table.txt next to STT2001.exe, so it could not be copied to the output folder.\n"
+			"Copy it there yourself before running the streamline tracing tool.");
+	}
+	CString leaf = m_OutputDir;
+	leaf.TrimRight('\\');
+	leaf = leaf.Mid(leaf.ReverseFind('\\') + 1);
+	if (leaf.IsEmpty() || leaf.Find(':') >= 0) leaf = "STT";
+	for (int i = 0; i < leaf.GetLength(); i++)
+		if (!isalnum((unsigned char)leaf[i]) && leaf[i] != '-') leaf.SetAt(i, '_');
+	if (!WriteSTTInputFile(leaf)) return;
+
+	m_STTRun_BUTTON.EnableWindow(1);
+	msg = "Done. All output files and the input files (MOC_Grid.inp and STT2001.inp) were saved to:\n";
+	msg += m_OutputDir + "\n\nClick 'Run Streamline Tracing Tool' or 'Run 3D MOC' to continue.";
+	AfxMessageBox(msg);
 	return;
 }
 
@@ -570,79 +687,117 @@ void CMOC_GridDlg::OnSelchangePrintCOMBO()
 	UpdateData(TRUE);
 }
 
-void CMOC_GridDlg::OnFileOpen() 
+//	Reads a MOC_Grid *.inp file into the dialog.
+BOOL CMOC_GridDlg::ReadInputFile(const CString& path)
 {
 	int a,b,c,d,e,f,g,h,i,j,k;
-	static char BASED_CODE szFilter[] = "Input Files (*.inp)|*.inp|All Files (*.*)|*.*||";
- 	CFileDialog myDialog(TRUE,"inp",m_DataFileName,OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,szFilter);
-	if ( IDOK == myDialog.DoModal() )
+	ifstream ifile((LPCTSTR)path, ios::in);
+	if(!ifile.is_open())
 	{
-		m_DataFileName = myDialog.GetFileName();
-		//Tharen Rice MAY 2020 edit: Changed ifstream call
-		//ifstream ifile(m_DataFileName,ios::nocreate | ios::in);
-		ifstream ifile(m_DataFileName, ios::in);
-		if(!ifile.is_open())
-		{
-			CString tmp;
-			tmp = m_DataFileName;
-			tmp += " does not exist";
-			AfxMessageBox(tmp);
-			exit(1);
-		}
-		ifile  >> a >> b >>	c >> d >> e >> f >> g >> h >> i >> j >> k 
-			>>	m_mDesign >> m_nC >> m_RWTD >> m_molWt_i
-			>>	m_pres_i >>	m_temp_i >>	m_gamma_i >> m_RWTU >>	m_dTLimit >> m_pAmb
-			>>	m_eps >> m_length >> m_rE >>m_xE >> m_nRRCAboveBD >> m_pExit
-			>>	m_nSLi >> m_nSLj >>	m_vel >> m_thetaBi >> m_coneAngle;;
-		ifile.close();
-	
-		m_throat_CHECK.SetCheck(a);
-		m_Axi_RADIO.SetCheck(d);
-		m_2D_RADIO.SetCheck(e);
-		m_perfect_RADIO.SetCheck(b);
-		m_exitMach_RADIO.SetCheck(c);
-		m_cone_RADIO.SetCheck(f);
-		m_minLength_RADIO.SetCheck(g);
-		m_endPoint_RADIO.SetCheck(h);
-		m_eps_RADIO.SetCheck(i);
-		m_length_RADIO.SetCheck(j);
-		m_pExit_RADIO.SetCheck(k);
-		UpdateScreen();
+		CString tmp = path;
+		tmp += " does not exist";
+		AfxMessageBox(tmp);
+		return FALSE;
 	}
+	ifile  >> a >> b >>	c >> d >> e >> f >> g >> h >> i >> j >> k 
+		>>	m_mDesign >> m_nC >> m_RWTD >> m_molWt_i
+		>>	m_pres_i >>	m_temp_i >>	m_gamma_i >> m_RWTU >>	m_dTLimit >> m_pAmb
+		>>	m_eps >> m_length >> m_rE >>m_xE >> m_nRRCAboveBD >> m_pExit
+		>>	m_nSLi >> m_nSLj >>	m_vel >> m_thetaBi >> m_coneAngle;
+	if (ifile.fail())
+	{
+		CString tmp = path;
+		tmp += " is not a valid MOC_Grid input file.";
+		AfxMessageBox(tmp);
+		return FALSE;
+	}
+	//	The ideal Isp was added to the end of the file later; older files do not have it
+	double isp;
+	int printMode = 0;
+	if (ifile >> isp) m_ispIdeal = isp;
+	if (ifile >> printMode) { /* print option: 0 = Normal, 1 = Full */ }
+	ifile.close();
+
+	m_throat_CHECK.SetCheck(a);
+	m_Axi_RADIO.SetCheck(d);
+	m_2D_RADIO.SetCheck(e);
+	m_perfect_RADIO.SetCheck(b);
+	m_exitMach_RADIO.SetCheck(c);
+	m_cone_RADIO.SetCheck(f);
+	m_minLength_RADIO.SetCheck(g);
+	m_endPoint_RADIO.SetCheck(h);
+	m_eps_RADIO.SetCheck(i);
+	m_length_RADIO.SetCheck(j);
+	m_pExit_RADIO.SetCheck(k);
+	UpdateScreen();
+	if (printMode == 0 || printMode == 1)
+	{
+		m_print_COMBO.SetCurSel(printMode);
+		OnSelchangePrintCOMBO();
+	}
+
+	m_DataFileName = path;
+	int slash = path.ReverseFind('\\');
+	if (slash > 0)
+	{
+		m_OutputDir = path.Left(slash);
+		//	A folder that already holds results can be handed straight to the other tools
+		m_STTRun_BUTTON.EnableWindow(GetFileAttributes(m_OutputDir + "\\STT2001.inp") != INVALID_FILE_ATTRIBUTES);
+		m_3DRun_BUTTON.EnableWindow(GetFileAttributes(m_OutputDir + "\\summary.out") != INVALID_FILE_ATTRIBUTES);
+	}
+	return TRUE;
+}
+
+//	Writes the current dialog values to a MOC_Grid *.inp file. The caller must have called
+//	UpdateData(TRUE) so that the values are current.
+BOOL CMOC_GridDlg::WriteInputFile(const CString& path)
+{
+	ofstream ofile((LPCTSTR)path);
+	if (!ofile.is_open())
+	{
+		CString tmp = "Could not write the input file:\n";
+		tmp += path;
+		AfxMessageBox(tmp);
+		return FALSE;
+	}
+	ofile    << m_throat_CHECK.GetCheck()   << "\t" <<	m_perfect_RADIO.GetCheck()
+	<< "\t"	 <<	m_exitMach_RADIO.GetCheck() << "\t" <<	m_Axi_RADIO.GetCheck()
+	<< "\t"  << m_2D_RADIO.GetCheck()       << "\t"  << m_cone_RADIO.GetCheck()
+	<< "\t"  << m_minLength_RADIO.GetCheck()<< "\t"  << m_endPoint_RADIO.GetCheck()
+	<< "\t"  << m_eps_RADIO.GetCheck()      << "\t"  << m_length_RADIO.GetCheck()	
+	<< "\t"  << m_pExit_RADIO.GetCheck() 
+	<< "\n"  <<	m_mDesign << "\t"  << m_nC     << "\t"  << m_RWTD     << "\t" << m_molWt_i
+	<< "\n"  <<	m_pres_i  << "\t"  << m_temp_i << "\t"  << m_gamma_i  << "\t" << m_RWTU     
+	<< "\n"  <<	m_dTLimit << "\t"  << m_pAmb
+	<< "\n"  <<	m_eps     << "\t"  << m_length << "\t"  << m_rE       << "\t" << m_xE       
+	<< "\n"  << m_nRRCAboveBD << "\t"  << m_pExit
+	<< "\n"  <<	m_nSLi    << "\t"  << m_nSLj   << "\t"  << m_vel      << "\t" << m_thetaBi 
+	<< "\n"  << m_coneAngle
+	<< "\n"  << m_ispIdeal << "\t" << m_print_COMBO.GetCurSel();
+	ofile.close();
+	return TRUE;
+}
+
+void CMOC_GridDlg::OnFileOpen() 
+{
+	static char BASED_CODE szFilter[] = "Input Files (*.inp)|*.inp|All Files (*.*)|*.*||";
+ 	CFileDialog myDialog(TRUE,"inp",NULL,OFN_HIDEREADONLY | OFN_FILEMUSTEXIST,szFilter);
+	if ( IDOK == myDialog.DoModal() )
+		ReadInputFile(myDialog.GetPathName());
 	return;
 }
 
-
-
 void CMOC_GridDlg::OnFileSave() 
 {
-	UpdateData(TRUE);
-	static char BASED_CODE szFilter[] = "Input Files (*.inp)|*.inp|All Files (*.*)|*.*||";
-	CFileDialog myDialog(FALSE,"inp",m_DataFileName,OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,szFilter);
 	if (m_DataFileName == "")
 		OnFileSaveas();
 	else
 	{
-		ofstream ofile(m_DataFileName);
-		m_DataFileName = myDialog.GetFileName();
-		ofile    << m_throat_CHECK.GetCheck()   << "\t" <<	m_perfect_RADIO.GetCheck()
-		<< "\t"	 <<	m_exitMach_RADIO.GetCheck() << "\t" <<	m_Axi_RADIO.GetCheck()
-		<< "\t"  << m_2D_RADIO.GetCheck()       << "\t"  << m_cone_RADIO.GetCheck()
-		<< "\t"  << m_minLength_RADIO.GetCheck()<< "\t"  << m_endPoint_RADIO.GetCheck()
-		<< "\t"  << m_eps_RADIO.GetCheck()      << "\t"  << m_length_RADIO.GetCheck()	
-		<< "\t"  << m_pExit_RADIO.GetCheck() 
-		<< "\n"  <<	m_mDesign << "\t"  << m_nC     << "\t"  << m_RWTD     << "\t" << m_molWt_i
-		<< "\n"  <<	m_pres_i  << "\t"  << m_temp_i << "\t"  << m_gamma_i  << "\t" << m_RWTU     
-		<< "\n"  <<	m_dTLimit << "\t"  << m_pAmb
-		<< "\n"  <<	m_eps     << "\t"  << m_length << "\t"  << m_rE       << "\t" << m_xE       
-		<< "\n"  << m_nRRCAboveBD << "\t"  << m_pExit
-		<< "\n"  <<	m_nSLi    << "\t"  << m_nSLj   << "\t"  << m_vel      << "\t" << m_thetaBi 
-		<< "\n"  << m_coneAngle ;
-		ofile.close();	
+		UpdateData(TRUE);
+		WriteInputFile(m_DataFileName);
 	}
 	return;
 }
-
 
 void CMOC_GridDlg::OnFileSaveas() 
 {
@@ -651,26 +806,77 @@ void CMOC_GridDlg::OnFileSaveas()
 	CFileDialog myDialog(FALSE,"inp",m_DataFileName,OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,szFilter);
 	if ( IDOK == myDialog.DoModal() )
 	{
-		m_DataFileName = myDialog.GetFileName();
-		ofstream ofile(m_DataFileName);
-		ofile    << m_throat_CHECK.GetCheck()   << "\t" <<	m_perfect_RADIO.GetCheck()
-		<< "\t"	 <<	m_exitMach_RADIO.GetCheck() << "\t" <<	m_Axi_RADIO.GetCheck()
-		<< "\t"  << m_2D_RADIO.GetCheck()       << "\t"  << m_cone_RADIO.GetCheck()
-		<< "\t"  << m_minLength_RADIO.GetCheck()<< "\t"  << m_endPoint_RADIO.GetCheck()
-		<< "\t"  << m_eps_RADIO.GetCheck()      << "\t"  << m_length_RADIO.GetCheck()	
-		<< "\t"  << m_pExit_RADIO.GetCheck() 
-		<< "\n"  <<	m_mDesign << "\t"  << m_nC     << "\t"  << m_RWTD     << "\t" << m_molWt_i
-		<< "\n"  <<	m_pres_i  << "\t"  << m_temp_i << "\t"  << m_gamma_i  << "\t" << m_RWTU     
-		<< "\n"  <<	m_dTLimit << "\t"  << m_pAmb
-		<< "\n"  <<	m_eps     << "\t"  << m_length << "\t"  << m_rE       << "\t" << m_xE       
-		<< "\n"  << m_nRRCAboveBD << "\t"  << m_pExit
-		<< "\n"  <<	m_nSLi    << "\t"  << m_nSLj   << "\t"  << m_vel      << "\t" << m_thetaBi 
-		<< "\n"  << m_coneAngle ;
-		ofile.close();
+		//	GetPathName() is the full path. (GetFileName() is only the name, which would
+		//	save the file in the program's working folder instead of the chosen one.)
+		CString path = myDialog.GetPathName();
+		if (WriteInputFile(path)) m_DataFileName = path;
 	}
 	return;
 }	
 	
+
+//	Writes STT2001.inp into the current (output) folder.  It names the files that
+//	MOC_Grid just wrote and fills in the other values from this run, so the streamline
+//	tracing tool is ready to run as soon as it opens. The default trimming set-up is one
+//	throat circle of 72 streamlines around the full axisymmetric flowfield (R* = 1 in), which
+//	rebuilds the MOC nozzle. Edit the trimming rows in STT2001 to design a 3-D nozzle.
+BOOL CMOC_GridDlg::WriteSTTInputFile(const CString& prefix)
+{
+	//	The 2-D mass flow comes from the MOC summary file
+	double mdot = 0.0;
+	{
+		ifstream sf("summary.out");
+		string line;
+		while (getline(sf, line))
+		{
+			if (line.compare(0, 13, "2-D Mass Flow") == 0)
+			{
+				size_t c = line.find(':');
+				if (c != string::npos) mdot = atof(line.c_str() + c + 1);
+				break;
+			}
+		}
+	}
+	if (mdot <= 0.0) mdot = 1.0;
+	const double throatArea = 3.14159265358979;	//	pi * R*^2, with R* = 1 in
+
+	//	Keep any earlier STT2001.inp (it may hold edited trimming rows)
+	CString inp = m_OutputDir + "\\STT2001.inp";
+	if (GetFileAttributes(inp) != INVALID_FILE_ATTRIBUTES)
+		MoveFileEx(inp, m_OutputDir + "\\STT2001_previous.inp", MOVEFILE_REPLACE_EXISTING);
+
+	ofstream ofile(inp);
+	if (!ofile.is_open())
+	{
+		CString tmp = "Could not write:\n";
+		tmp += inp;
+		AfxMessageBox(tmp);
+		return FALSE;
+	}
+	//	The layout must match STT2001's File>Open / File>Save
+	ofile << (LPCTSTR)prefix << "\tMOC_SL.plt\tMOC_Grid.plt\tsummary.out\tfriction_table.txt\n"
+		<< "1\t1\t1\n"				//	R of the flowfield: start, end, step
+		<< "0\t0\t1\n"				//	X
+		<< "0\t0\t1\n"				//	Y
+		<< "0\t0\t1\n"				//	Z (not used)
+		<< "1\t0\t0\t0\t0\n"		//	constraint radius Rc
+		<< "0\t0\t0\t0\t0\n"		//	Yc
+		<< "0\t0\t0\t0\t0\n"		//	Zc
+		<< "0\t0\t0\t0\t0\n"		//	start angle
+		<< "360\t0\t0\t0\t0\n"		//	end angle
+		<< "72\t0\t0\t0\t0\n"		//	number of streamlines
+		<< "0\t0\t0\t0\t0\n"		//	X start
+		<< "0\t0\t0\t0\t0\n"		//	X end
+		<< m_pAmb << "\t" << throatArea << "\t" << m_ispIdeal << "\t" << mdot << "\n"
+		<< "0\t0\t0\t0\t0\t0\n"	//	symmetry definition
+		<< "1\t0\t0\t0\t0\n"		//	row 1 is the throat
+		<< "1\t0\t0\t0\t0\n"		//	row 1 is enabled
+		<< "0\t0\t0\t0\t0\n"		//	surface: inner
+		<< "0\t0\t1\t0\t1";			//	max length off, value, grid scale factor, X status, crop nozzle on
+	ofile.close();
+	return TRUE;
+}
+
 
 void CMOC_GridDlg::UpdateScreen( void)
 {
@@ -693,39 +899,83 @@ void CMOC_GridDlg::UpdateScreen( void)
 
 void CMOC_GridDlg::OnSTTRunBUTTON() 
 {
-	fstream ofile;
-	ofile.open("$$.bat", ios::out);
-	char cDir[80];
-	_getdcwd( 'C' - 'A' + 1, cDir, 80 );
+	//	Starts the streamline tracing tool with the STT2001.inp that was saved with the
+	//	MOC_Grid results. The tool is started IN the output folder, so it loads that file
+	//	and finds all of the other files there.
+	CString inp = m_OutputDir + "\\STT2001.inp";
+	if (m_OutputDir.IsEmpty() || GetFileAttributes(inp) == INVALID_FILE_ATTRIBUTES)
+	{
+		AfxMessageBox("Calculate the MOC grid with the Print Option set to Full first.");
+		return;
+	}
+	CString exe = GetToolPath("STT2001\\STT2001.exe");
+	if (GetFileAttributes(exe) == INVALID_FILE_ATTRIBUTES)
+	{
+		CString tmp = "Could not find the streamline tracing tool:\n";
+		tmp += exe;
+		AfxMessageBox(tmp);
+		return;
+	}
 
-	// Tharen Rice May 2020: The user will need to edit the location of the
-	// Streamline tracing tool executable
-	//CString path = "c:\\docume~1\\DALESSM1\\Desktop\\STT";
-	// Tharen Rice: MAY 2020.  The path to the streamline tracing tool is hardcoded here.
-	// This must be changed to work on your system
-		CString path = "..\\STT2001";
-	//	This function executes the Streamline Tracing tool
-	CString command;
-	command = "cd ";
-	command += cDir;
-	ofile << command << endl;
+	CString cmdLine = "\"" + exe + "\" \"" + inp + "\"";
+	STARTUPINFO si;
+	PROCESS_INFORMATION pi;
+	ZeroMemory(&si, sizeof(si));
+	ZeroMemory(&pi, sizeof(pi));
+	si.cb = sizeof(si);
+	LPTSTR buf = cmdLine.GetBuffer();
+	BOOL ok = CreateProcess(NULL, buf, NULL, NULL, FALSE, 0, NULL, m_OutputDir, &si, &pi);
+	DWORD err = GetLastError();
+	cmdLine.ReleaseBuffer();
+	if (!ok)
+	{
+		CString tmp;
+		tmp.Format("Could not start the streamline tracing tool (error %lu):\n%s", err, (LPCTSTR)exe);
+		AfxMessageBox(tmp);
+		return;
+	}
+	CloseHandle(pi.hThread);
+	CloseHandle(pi.hProcess);
+	return;	
+}
 
-	command = "copy summary.out ";
-	command += path;
-	ofile << command << endl;	
-	command = "copy moc_grid.plt ";
-	command += path;
-	ofile << command << endl;	
-	command = "copy moc_sl.plt ";
-	command += path;
-	ofile << command << endl;	
+void CMOC_GridDlg::On3DRunBUTTON() 
+{
+	//	Starts the 3D MOC tool on the folder that holds the MOC_Grid results. 3D_MOC fills
+	//	in its own inputs from the files in that folder (it writes the nozzle geometry file
+	//	and 3D_MOC.inp there) and saves everything it calculates to the same folder.
+	if (m_OutputDir.IsEmpty() || GetFileAttributes(m_OutputDir + "\\summary.out") == INVALID_FILE_ATTRIBUTES)
+	{
+		AfxMessageBox("Calculate the MOC grid first.");
+		return;
+	}
+	CString exe = GetToolPath("3D_MOC\\3DCalc.exe");
+	if (GetFileAttributes(exe) == INVALID_FILE_ATTRIBUTES)
+	{
+		CString tmp = "Could not find the 3D MOC tool:\n";
+		tmp += exe;
+		AfxMessageBox(tmp);
+		return;
+	}
 
-	command = "cd ";
-	command += path;
-	ofile << command << endl << "STT2001.exe" << endl;
-//	ofile << command << endl << "DEBUG\\STT2001.exe" << endl;
-
-	ofile.close();
-	system("$$.bat");
+	CString cmdLine = "\"" + exe + "\" \"" + m_OutputDir + "\"";
+	STARTUPINFO si;
+	PROCESS_INFORMATION pi;
+	ZeroMemory(&si, sizeof(si));
+	ZeroMemory(&pi, sizeof(pi));
+	si.cb = sizeof(si);
+	LPTSTR buf = cmdLine.GetBuffer();
+	BOOL ok = CreateProcess(NULL, buf, NULL, NULL, FALSE, 0, NULL, m_OutputDir, &si, &pi);
+	DWORD err = GetLastError();
+	cmdLine.ReleaseBuffer();
+	if (!ok)
+	{
+		CString tmp;
+		tmp.Format("Could not start the 3D MOC tool (error %lu):\n%s", err, (LPCTSTR)exe);
+		AfxMessageBox(tmp);
+		return;
+	}
+	CloseHandle(pi.hThread);
+	CloseHandle(pi.hProcess);
 	return;	
 }

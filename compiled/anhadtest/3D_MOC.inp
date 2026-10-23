@@ -1,0 +1,15 @@
+geometry_file	anhadtest.geo
+pressure_psia	51.83157357
+temperature_R	346.2427892
+mach	1.134933554
+mol_wt	31.998
+gamma	1.41
+theta_deg	0
+psi_deg	0
+axial_location_in	0
+radial_divisions	36
+print_every_x	2
+print_every_y	1
+print_every_z	10
+print_every_step	999
+surface_fit	All Point Spline

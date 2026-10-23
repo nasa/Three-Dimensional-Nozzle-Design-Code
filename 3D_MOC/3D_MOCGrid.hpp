@@ -36,6 +36,7 @@
 #include <limits>
 #include <cmath>
 #include "float.h"
+#include "nrtypes_nr.h"
 
 
 enum bodyType{CONSTANT_X, CONSTANT_Y, LINE, CIRCLE}; 

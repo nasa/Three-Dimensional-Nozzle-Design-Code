@@ -207,7 +207,8 @@ protected:
 	afx_msg void OnConstraint5CHECK();
 	afx_msg void OnThroat5CHECK();
 	//}}AFX_MSG
-	void GetSLData();
+	int GetSLData();
+	BOOL LoadInputFile(const CString& path);
 	void GetSLDataWithoutExitPlane();
 	void TurnCheckBoxesOff();
 	void InitializeArrays( int j);
@@ -251,6 +252,8 @@ protected:
 	int rotateSL[999], circleFlag, m_NAtMaxY, m_NAtMinY , nparamGRIDX, m_NAtMaxX;
 	const int nparamPTS;
 	CString m_DataFileName;
+	CString m_OutputDir;		// folder chosen for the output when no .inp file was opened
+	BOOL ChooseOutputFolder();
 	CChart m_SLChart;
 	m_SymDef_DIALOG m_SymDefDlg;
 	PlotDialog m_PlotDlg;

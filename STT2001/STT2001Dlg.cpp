@@ -2,6 +2,7 @@
 //
 
 #include "stdafx.h"
+#include <afxdlgs.h>
 #include "STT2001.h"
 #include "STT2001Dlg.h"
 /*Tharen Rice 2020 change*/
@@ -12,6 +13,7 @@
 // Tharen Rice. MAY 2020. Added this to try and make the GetSLData function work.
 #include <iostream> 
 #include <string> 
+#include <sstream>
 using namespace std;
 /*END OF CHANGE*/
 
@@ -383,7 +385,33 @@ BOOL CSTT2001Dlg::OnInitDialog()
 	CSTT2001Dlg::UpdateWindow();
 
 	nparamGRIDX = 100;
-	
+
+	//	If a .inp file was given on the command line (this is how MOC_Grid starts this
+	//	program), load it.  That also switches to the folder holding the MOC_Grid output
+	//	files, so the dialog comes up filled in and ready to run.
+	CString cmd = AfxGetApp()->m_lpCmdLine;
+	cmd.Trim();
+	if (!cmd.IsEmpty())
+	{
+		if (cmd[0] == '"')
+		{
+			int q = cmd.Find('"', 1);
+			cmd = (q > 0) ? cmd.Mid(1, q - 1) : cmd.Mid(1);
+		}
+		if (GetFileAttributes(cmd) != INVALID_FILE_ATTRIBUTES && LoadInputFile(cmd))
+		{
+			CString title = "Streamline Tracing Tool 2001";
+			int slash = m_DataFileName.ReverseFind('\\');
+			if (slash > 0)
+			{
+				title += " - ";
+				title += m_DataFileName.Left(slash);
+			}
+			SetWindowText(title);
+			m_Status_EDIT.SetWindowText("Input file loaded. Click Execute.");
+			CSTT2001Dlg::UpdateWindow();
+		}
+	}
 	
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -601,12 +629,34 @@ void CSTT2001Dlg::OnThroat5CHECK()
 }
 
 
+//	Every input and output file is opened by bare name, i.e. in the working folder. Opening a
+//	.inp file (File>Open, or from MOC_Grid) switches to its folder.  If none was opened, ask for
+//	the MOC_Grid output folder, so the results never end up next to the program.
+BOOL CSTT2001Dlg::ChooseOutputFolder()
+{
+	CFolderPickerDialog dlg(NULL, 0, this, 0);
+	dlg.m_ofn.lpstrTitle = _T("Choose the MOC_Grid output folder (the input files are read from it and all output files are saved to it)");
+	if (dlg.DoModal() != IDOK) return FALSE;
+	CString folder = dlg.GetPathName();
+	while (folder.GetLength() > 3 && (folder.Right(1) == "\\" || folder.Right(1) == "/"))
+		folder = folder.Left(folder.GetLength() - 1);
+	if (!SetCurrentDirectory(folder))
+	{
+		AfxMessageBox("That folder cannot be used:\n" + folder);
+		return FALSE;
+	}
+	m_OutputDir = folder;
+	SetWindowText("Streamline Tracing Tool 2001 - " + folder);
+	return TRUE;
+}
+
 void CSTT2001Dlg::OnExeButton( void) 
 {
-	int goFlag, totalSteps, SLCount = 999;
+	int goFlag = 0, totalSteps, SLCount = 999;
 	double isp,yXStatus = 0, thetaXStatus= 0;
 	//	This function is the work horse of the program. 
 	UpdateData(TRUE);
+	if (m_DataFileName.IsEmpty() && m_OutputDir.IsEmpty() && !ChooseOutputFolder()) return;
 	m_EXE_BUTTON.EnableWindow(0);
 	m_Plot_BUTTON.EnableWindow(0);
 
@@ -643,15 +693,27 @@ void CSTT2001Dlg::OnExeButton( void)
 	 << "XStatus Theta @ Min Y (deg)" << endl; 
 	m_Status_EDIT.SetWindowText("Retrieving Streamline Data from input file.");
 	CSTT2001Dlg::UpdateWindow();
-	GetSLData();
+	if (!GetSLData())
+	{
+		//	Could not read the streamline data. Clean up and let the user try again.
+		loopFile.close();
+		m_Status_EDIT.SetWindowText("Could not read the streamline data file.");
+		CSTT2001Dlg::UpdateWindow();
+		nparamGRIDX = 100;
+		DeleteArrays(SLCount);
+		m_EXE_BUTTON.EnableWindow(1);
+		return;
+	}
 	
 	// Here loop through the various SL definitions.  For each SL, reset the calculated
 	//	values
 	
 //	if ( m_ZSLStep == 0.0) m_ZSLStep = m_ZSLEnd - m_ZSLStart;
-	if ( m_RSLStep == 0.0) m_RSLStep = m_RSLEnd - m_RSLStart;
-	if ( m_YSLStep == 0.0) m_YSLStep = m_YSLEnd - m_YSLStart;
-	if ( m_XSLStep == 0.0) m_XSLStep = m_XSLEnd - m_XSLStart;
+	// A zero/negative step (or start==end with step 0) would make the loops below
+	// run forever, so fall back to a single pass.
+	if ( m_RSLStep <= 0.0) m_RSLStep = (m_RSLEnd > m_RSLStart) ? (m_RSLEnd - m_RSLStart) : 1.0;
+	if ( m_YSLStep <= 0.0) m_YSLStep = (m_YSLEnd > m_YSLStart) ? (m_YSLEnd - m_YSLStart) : 1.0;
+	if ( m_XSLStep <= 0.0) m_XSLStep = (m_XSLEnd > m_XSLStart) ? (m_XSLEnd - m_XSLStart) : 1.0;
 	totalSteps = 1;
 //	if ( m_ZSLStep != 0.0) totalSteps *= int((m_ZSLEnd - m_ZSLStart)/m_ZSLStep+1);
 	if ( m_RSLStep != 0.0) totalSteps *= int((m_RSLEnd - m_RSLStart)/m_RSLStep+1); 
@@ -915,91 +977,85 @@ void CSTT2001Dlg::TurnCheckBoxesOff()
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-void CSTT2001Dlg::GetSLData()
+int CSTT2001Dlg::GetSLData()
 {
 	//	This function extracts the SL data (X,R,PSI) from the input data file
-	//  This file has the .plt suffix
-	CString fileStr = m_SLFileName;
-	//Tharen Rice MAy 2020 change
-	//fstream ifile(fileStr,ios::nocreate | ios::in);
-	fstream ifile(fileStr,  ios::in);
-	// End of Change
-	if(!ifile.is_open())
-	{
-		fileStr += " does not exist";
-		AfxMessageBox(fileStr);
-		exit(1);
-	}
-
+	//  This file has the .plt suffix.  Returns 1 on success and 0 on failure (after
+	//	telling the user what was wrong).
+	//
 	//	The data file contains SL data in the form of
 	//	Line 1-3: Dummy header
 	//	zone t Lines: massflow function 0: centerline  100:wall
 	//	Other lines: x,dummy1,dummy2,r,M,p,t,rho,theta,g,mdot,j
-	
-	//char cPeek;
-	char cstr[10];
- 	string strLine;
-	int i,k,j;
-	double x,r,M,p,t,rho,theta,g, mdot, dummy1, dummy2;
-	
-	// Tharen Rice. May 2020. Find the 1st set of data. It begins with the "zone t=" line
-	// skip the 1st 3 lines
-	getline(ifile,strLine);
-	getline(ifile, strLine);
-	getline(ifile, strLine);
-	i = -1;
-	// This function will return 0 if not found
-	/*while(strLine.find("zone t="))
-	//while ( cLine.Left(7) != "zone t=") 
+	//
+	//	Each line is parsed on its own so that a bad value (for example a NaN written by
+	//	a MOC_Grid run that did not converge) is reported instead of corrupting the arrays.
+	const int maxSLs = 999;		// InitializeArrays always allocates at least this many SLs
+	CString fileStr = m_SLFileName;
+	fstream ifile(fileStr, ios::in);
+	if(!ifile.is_open())
 	{
-		getline(ifile,strLine);
-		if (ifile.eof())
-		{
-			AfxMessageBox("Could not get SL Data");
-			exit(1);
-		}
+		fileStr += " does not exist";
+		AfxMessageBox(fileStr);
+		return 0;
 	}
-	// Extract the PSI Value from the zone line
-	//	Get the first PSI value
-	for (int jjk = 0; jjk < 3; jjk++)
-	{
-		cstr[jjk] = strLine[21 + jjk];
-	}	
-	psi[i] = atof(cstr);*/
-	k = 0;
 
-	// Keep reading the data. When you get to another zone t= section, stop and record the psi value.
-	// Go to the next line
-	//getline(ifile, strLine);
-	//	now get the x,r data the SL until you reach the end of the file.
+	string strLine;
+	int i = -1, k = 0, j, lineNo = 0;
+	double x,r,M,p,t,rho,theta,g, mdot, dummy1, dummy2;
+	CString msg;
+
+	//	Skip the 3 header lines
+	for (int h = 0; h < 3; h++)
+	{
+		getline(ifile, strLine);
+		lineNo++;
+	}
+
 	//	Set the x1 and x2 values to dummy values
 	x1 = 9e9;
 	x2 = -9e9;
-	while ( !ifile.eof())
+	while ( getline(ifile, strLine) )
 	{
-		// peek at the next line.  If it does not start with z, then output the data to variable
-		//getline(ifile, strLine);
-		// If the line starts with z, the record the next psi value
-		char zstr = ifile.peek();
-		if (zstr == 'z')
-		{
-			i++;
+		lineNo++;
+		//	Ignore blank lines
+		if (strLine.find_first_not_of(" \t\r\n") == string::npos) continue;
 
-			// Read the line 
-			getline(ifile, strLine);
-			for (int jjk = 0; jjk < 3; jjk++)
+		if (strLine[0] == 'z')
+		{
+			//	Start of a new streamline. The mass flow percent follows the "% = " text
+			i++;
+			if (i >= maxSLs)
 			{
-				cstr[jjk] = strLine[21 + jjk];
+				msg.Format("%s contains more than %d streamlines.", (LPCTSTR)m_SLFileName, maxSLs);
+				AfxMessageBox(msg);
+				return 0;
 			}
-			psi[i] = atof(cstr);
+			size_t pos = strLine.find("% = ");
+			psi[i] = (pos != string::npos) ? atof(strLine.c_str() + pos + 4) : 0.0;
+			lastSLPt[i] = -1;
 			k = 0;
 		}
-		else
+		else if (i >= 0)
 		{
-			//extract the data from the file as below
-			ifile >> x >> dummy1 >> dummy2 >> r >> M >> p >> t >> rho >> theta >> g >> mdot >> j >> ws;
-			// I am using this to get to the next line. I used to use eatwhite, but that function went away.
-		//	getline(ifile, strLine);
+			istringstream ss(strLine);
+			if (!(ss >> x >> dummy1 >> dummy2 >> r >> M >> p >> t >> rho >> theta >> g >> mdot >> j))
+			{
+				msg.Format("%s, line %d, contains a value that is not a number (for example NaN).\n\n"
+					"The MOC_Grid run that wrote this file did not produce a valid solution, "
+					"so it cannot be used.\nRe-run MOC_Grid with different inputs.",
+					(LPCTSTR)m_SLFileName, lineNo);
+				AfxMessageBox(msg);
+				return 0;
+			}
+			if (k >= nparamPTS)
+			{
+				msg.Format("Streamline %d in %s has more than %d points.\n\n"
+					"Reduce the number of output streamlines in MOC_Grid and re-run it.",
+					i, (LPCTSTR)m_SLFileName, nparamPTS);
+				AfxMessageBox(msg);
+				return 0;
+			}
 			// i: streamline number
 			// k: point on the streamline
 			xsl[i][k] = x;
@@ -1014,10 +1070,25 @@ void CSTT2001Dlg::GetSLData()
 			x2 = __max(x2,x);
 		}
 	} // end of reading data
-	nSL = i+1;  // number of streamlines
- 	return;
-}
 
+	nSL = i+1;  // number of streamlines
+	if (nSL < 2)
+	{
+		msg.Format("No streamline data was found in %s.", (LPCTSTR)m_SLFileName);
+		AfxMessageBox(msg);
+		return 0;
+	}
+	for (i = 0; i < nSL; i++)
+	{
+		if (lastSLPt[i] < 1)
+		{
+			msg.Format("Streamline %d in %s has fewer than 2 points.", i, (LPCTSTR)m_SLFileName);
+			AfxMessageBox(msg);
+			return 0;
+		}
+	}
+ 	return 1;
+}
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -2265,77 +2336,92 @@ void CSTT2001Dlg::OnSymDefBUTTON()
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-void CSTT2001Dlg::OnFileOpen() 
+BOOL CSTT2001Dlg::LoadInputFile(const CString& path)
 {
-	// TODO: Add your command handler code here
-	static char BASED_CODE szFilter[] = "Input Files (*.inp)|*.inp|All Files (*.*)|*.*||";
- 	CFileDialog myDialog(TRUE,"inp",m_DataFileName,OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,szFilter);
-	if ( IDOK == myDialog.DoModal() )
+	//	Reads a *.inp file and fills in the dialog.  Every file named in the .inp is
+	//	opened by bare name, so the working directory is switched to the .inp's folder.
+	int d,e,f,g,h,r,s,t,u,v,w,x,aa,gg,rr,xx,yy;
+	string a, b, cc, bb, dd;
+
+	int slash = path.ReverseFind('\\');
+	if (slash < 0) slash = path.ReverseFind('/');
+	if (slash > 0) SetCurrentDirectory(path.Left(slash));
+
+	fstream ifile((LPCTSTR)path, ios::in);
+	if(!ifile.is_open())
 	{
-		char a[50], b[50], cc[50], bb[50], dd[50];
-		int d,e,f,g,h,r,s,t,u,v,w,x,aa,gg,rr,xx,yy;
-		m_DataFileName = myDialog.GetFileName();
-		//Tharen Rice MAy 2020 change
-		//fstream ifile(fileStr,ios::nocreate | ios::in);
-		fstream ifile(m_DataFileName, ios::in);
-		// End of Change
-		if(!ifile.is_open())
-		{
-			CString tmp;
-			tmp = m_DataFileName;
-			tmp += " does not exist";
-			AfxMessageBox(tmp);
-			exit(1);
-		}
-		ifile >>    a >> b >> dd >> bb >> cc 
-				>>	m_RSLStart	>> m_RSLEnd >> m_RSLStep
-				>>	m_XSLStart	>> m_XSLEnd >> m_XSLStep  
-				>>	m_YSLStart	>> m_YSLEnd >> m_YSLStep
-				>>	m_ZSLStart	>> m_ZSLEnd >> m_ZSLStep  
-				>>	m_RC1		>> m_RC2	>> m_RC3	>> m_RC4 >> m_RC5	
-				>>	m_YC1		>> m_YC2	>> m_YC3	>> m_YC4 >> m_YC5 
-				>>	m_ZC1		>> m_ZC2	>> m_ZC3	>> m_ZC4 >> m_ZC5 
-				>>	m_Alpha1	>> m_Alpha2	>> m_Alpha3	>> m_Alpha4 >> m_Alpha5	
-				>>	m_Omega1	>> m_Omega2	>> m_Omega3	>> m_Omega4 >> m_Omega5	 
-				>>	m_nSL1		>> m_nSL2	>> m_nSL3	>> m_nSL4 >> m_nSL5	 
-				>>	m_XStart1	>> m_XStart2>> m_XStart3>> m_XStart4 >> m_XStart5
-				>>	m_XEnd1		>> m_XEnd2	>> m_XEnd3	>> m_XEnd4 >> m_XEnd5	 
-				>>	m_pAmbient	>> m_aThroat>> m_IspIdeal>>m_MassFlow
-				>> m_SymDefDlg.m_RSim >> m_SymDefDlg.m_YSim	>> 	m_SymDefDlg.m_ZSim  
-				>> m_SymDefDlg.m_nRev >> m_SymDefDlg.m_SL1Match >> m_SymDefDlg.m_SL2Match
-				>> d >> e >> f >> g >> gg >> h >>	t >> s >> r 
-				>> rr >> u >> v >> w >> x >> xx 
-				>> aa >> m_MaxLengthC >> m_GridSF >> m_XStatus >> yy; 
-			
-		m_Throat1_CHECK.SetCheck(d);
-		m_Throat2_CHECK.SetCheck(e);
-		m_Throat3_CHECK.SetCheck(f);
-		m_Throat4_CHECK.SetCheck(g);
-		m_Throat5_CHECK.SetCheck(gg);
-		m_Constraint1_CHECK.SetCheck(h);
-		m_Constraint2_CHECK.SetCheck(t);
-		m_Constraint3_CHECK.SetCheck(s);
-		m_Constraint4_CHECK.SetCheck(r);
-		m_Constraint5_CHECK.SetCheck(rr);
-		m_C1_COMBO.SetCurSel(u);
-		m_C2_COMBO.SetCurSel(v);
-		m_C3_COMBO.SetCurSel(w);
-		m_C4_COMBO.SetCurSel(x);
-		m_C5_COMBO.SetCurSel(xx);
-		m_contourFlag_CHECK.SetCheck(yy);
-		m_MaxLengthC_CHECK.SetCheck(aa);
-		UpdateScreen();
-		m_filePrefix = a;
-		m_SLFileName = b;
-		m_MOCSummaryFileName = bb;
-		m_FrictionFile = cc;
-		m_MOCGridFile = dd;
-		
-		UpdateScreen();
-		ifile.close();
+		CString tmp = path;
+		tmp += " does not exist";
+		AfxMessageBox(tmp);
+		return FALSE;
 	}
+	ifile >>    a >> b >> dd >> bb >> cc 
+			>>	m_RSLStart	>> m_RSLEnd >> m_RSLStep
+			>>	m_XSLStart	>> m_XSLEnd >> m_XSLStep  
+			>>	m_YSLStart	>> m_YSLEnd >> m_YSLStep
+			>>	m_ZSLStart	>> m_ZSLEnd >> m_ZSLStep  
+			>>	m_RC1		>> m_RC2	>> m_RC3	>> m_RC4 >> m_RC5	
+			>>	m_YC1		>> m_YC2	>> m_YC3	>> m_YC4 >> m_YC5 
+			>>	m_ZC1		>> m_ZC2	>> m_ZC3	>> m_ZC4 >> m_ZC5 
+			>>	m_Alpha1	>> m_Alpha2	>> m_Alpha3	>> m_Alpha4 >> m_Alpha5	
+			>>	m_Omega1	>> m_Omega2	>> m_Omega3	>> m_Omega4 >> m_Omega5	 
+			>>	m_nSL1		>> m_nSL2	>> m_nSL3	>> m_nSL4 >> m_nSL5	 
+			>>	m_XStart1	>> m_XStart2>> m_XStart3>> m_XStart4 >> m_XStart5
+			>>	m_XEnd1		>> m_XEnd2	>> m_XEnd3	>> m_XEnd4 >> m_XEnd5	 
+			>>	m_pAmbient	>> m_aThroat>> m_IspIdeal>>m_MassFlow
+			>> m_SymDefDlg.m_RSim >> m_SymDefDlg.m_YSim	>> 	m_SymDefDlg.m_ZSim  
+			>> m_SymDefDlg.m_nRev >> m_SymDefDlg.m_SL1Match >> m_SymDefDlg.m_SL2Match
+			>> d >> e >> f >> g >> gg >> h >>	t >> s >> r 
+			>> rr >> u >> v >> w >> x >> xx 
+			>> aa >> m_MaxLengthC >> m_GridSF >> m_XStatus >> yy; 
+	if (ifile.fail())
+	{
+		CString tmp = path;
+		tmp += " is not a valid STT2001 input file (it ends early or contains a value that is not a number).";
+		AfxMessageBox(tmp);
+		return FALSE;
+	}
+	ifile.close();
+
+	m_DataFileName = path;
+	m_filePrefix = a.c_str();
+	m_SLFileName = b.c_str();
+	m_MOCSummaryFileName = bb.c_str();
+	m_FrictionFile = cc.c_str();
+	m_MOCGridFile = dd.c_str();
+		
+	m_Throat1_CHECK.SetCheck(d);
+	m_Throat2_CHECK.SetCheck(e);
+	m_Throat3_CHECK.SetCheck(f);
+	m_Throat4_CHECK.SetCheck(g);
+	m_Throat5_CHECK.SetCheck(gg);
+	m_Constraint1_CHECK.SetCheck(h);
+	m_Constraint2_CHECK.SetCheck(t);
+	m_Constraint3_CHECK.SetCheck(s);
+	m_Constraint4_CHECK.SetCheck(r);
+	m_Constraint5_CHECK.SetCheck(rr);
+	m_C1_COMBO.SetCurSel(u);
+	m_C2_COMBO.SetCurSel(v);
+	m_C3_COMBO.SetCurSel(w);
+	m_C4_COMBO.SetCurSel(x);
+	m_C5_COMBO.SetCurSel(xx);
+	m_contourFlag_CHECK.SetCheck(yy);
+	m_MaxLengthC_CHECK.SetCheck(aa);
+	UpdateScreen();
+	return TRUE;
 }
 
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+void CSTT2001Dlg::OnFileOpen() 
+{
+	static char BASED_CODE szFilter[] = "Input Files (*.inp)|*.inp|All Files (*.*)|*.*||";
+ 	CFileDialog myDialog(TRUE,"inp",NULL,OFN_HIDEREADONLY | OFN_FILEMUSTEXIST,szFilter);
+	if ( IDOK == myDialog.DoModal() )
+		LoadInputFile(myDialog.GetPathName());
+	return;
+}
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -2392,7 +2478,7 @@ void CSTT2001Dlg::OnFileSaveas()
 	CFileDialog myDialog(FALSE,"inp",m_DataFileName,OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,szFilter);
 	if ( IDOK == myDialog.DoModal() )
 	{
-		m_DataFileName = myDialog.GetFileName();
+		m_DataFileName = myDialog.GetPathName();
 		ofstream ofile(m_DataFileName);
 		ofile	<<  m_filePrefix << "\t" << m_SLFileName << "\t" << m_MOCGridFile << "\t"
 				<< m_MOCSummaryFileName << "\t"<< m_FrictionFile << "\n"
@@ -2731,7 +2817,8 @@ void CSTT2001Dlg::GetPerformanceDataFromMOCSummaryFile( void)
 		// To make the rest of the stuff work.  if the line is blank, create a dummy string
 		if (strLine.length() > 0)
 		{
-			char cLine[10];
+			char cLine[11];
+			memset(cLine, 0, sizeof(cLine));
 			//	SUMFile.getline(line,80);
 			// Depending on what the line says, get the correct data
 			if (strLine.compare(0, 16, "2-D Gross Thrust") == 0)
@@ -2933,14 +3020,18 @@ double CSTT2001Dlg::FindMaxX(int nSLs)
 	//	Search thru the nt[n] variable for the minimum i values. This is the 
 	//	closest streamline
 	//	minTrim refers to the SL that has been trimmed do to the constraints
-	const int kParam = 199; 
+	const int gridDim = 400;	// size of the work arrays below (points and J values)
+	const int kParam = gridDim - 1; 
 	// the jParan value has to be set to a value that is greater than the number
 	// of j entries in the MOC_Grid.plt file.
-	const int jParam = 220; 
-	int i, n,k,j, iMatch, jMatch = -99, jj, m;
+	const int jParam = gridDim; 
+	int i, n,k = 0,j = 0, iMatch, jMatch = -99, jj, m;
 	double minTrimX = 9e9,jf, minTrimR, minDist=9e9, dist, xRW, rRW;
-	int minTrimI = 99999,iMOC[jParam][kParam], lastPt[jParam], iAxial;
-	double xMOC[jParam][kParam], rMOC[jParam][kParam], rad;
+	int minTrimI = 99999, lastPt[jParam], iAxial;
+	//	These are indexed [point][J]. They are large, so keep them off the stack.
+	static int iMOC[gridDim][gridDim];
+	static double xMOC[gridDim][gridDim], rMOC[gridDim][gridDim];
+	double rad;
 	//	minI refers to the streamline that needs to be investigated
 	//	Also search thru the last points of all of the strealines to find the 
 	//	minimum x point
@@ -2973,7 +3064,6 @@ double CSTT2001Dlg::FindMaxX(int nSLs)
 	//	Line odd...: x/R, r/R, Mach, Theta, massflow, i
 	//	i: streamline number: 0 = centerline,  maximum i = wall 
 	
-	char cstr[10];
 	double xIn,rIn,a,b,c;
 	int iIn;
 	string strLine;
@@ -3005,14 +3095,9 @@ double CSTT2001Dlg::FindMaxX(int nSLs)
 				lastPt[j] = k - 1;
 			}
 			k = 0;
-			//	Get the first PSI value
+			//	Get the J value from the zone line (zone t="J = 12")
 			getline(ifile, strLine);
-			for (int jjk = 0; jjk < 3; jjk++)
-			{
-				cstr[jjk] = strLine[12 + jjk];
-			}
-
-			jf = atof(cstr);
+			jf = (strLine.length() > 12) ? atof(strLine.c_str() + 12) : 0.0;
 			j = (int)jf;
 
 			if (j >= jParam)
@@ -3025,6 +3110,12 @@ double CSTT2001Dlg::FindMaxX(int nSLs)
 		else
 		{
 			ifile >> xIn >> rIn >> a >> b >> c >> iIn >> ws;
+			if (ifile.fail())
+			{
+				AfxMessageBox("The MOC grid file contains a value that is not a number (for example NaN).\n"
+					"Re-run MOC_Grid with different inputs.");
+				return -1.0;
+			}
 			// i: streamline number
 			// k: point on the streamline
 			xMOC[k][j] = xIn;
@@ -3079,6 +3170,7 @@ double CSTT2001Dlg::FindMaxX(int nSLs)
 	//	the nozzle exit plane, and therefore, -1.0 should be returned.
 
 	iAxial = iMOC[lastPt[jMatch]][jMatch];
+	if (iAxial < 0 || iAxial >= gridDim) return -1.0;
 	xRW = xMOC[iAxial][jMatch];
 	rRW = rMOC[iAxial][jMatch];
 
@@ -3090,6 +3182,7 @@ double CSTT2001Dlg::FindMaxX(int nSLs)
 		//	i-m, j+m. This is not exactly right, but it is close
 		for ( m = 1; m <= iAxial; m++)
 		{
+			if (jMatch + m >= jParam) break;
 			xRW = xMOC[iAxial-m][jMatch+m];
 			rRW = rMOC[iAxial-m][jMatch+m];
 			
